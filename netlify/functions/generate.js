@@ -15,7 +15,7 @@ exports.handler = async function(event) {
 
     const body = JSON.parse(event.body || "{}");
     const words = Array.isArray(body.words) ? body.words.map(String) : [];
-    const mode = String(body.mood || body.mode || "診断として見る");
+    const mode = String(body.mode || body.mood || "診断として見る");
     const retry = Boolean(body.retry);
 
     const validation = validateInput(words, mode);
@@ -29,7 +29,7 @@ exports.handler = async function(event) {
       },
       body: JSON.stringify({
         model,
-        temperature: retry ? 1.05 : 0.9,
+        temperature: retry ? 1.0 : 0.85,
         input: [
           { role: "system", content: buildSystemPrompt(mode, words) },
           { role: "user", content: buildUserPrompt(words, mode, retry) }
@@ -48,8 +48,6 @@ exports.handler = async function(event) {
                 tuning: { type: "string" },
                 proposals: {
                   type: "array",
-                  minItems: 3,
-                  maxItems: 3,
                   items: {
                     type: "object",
                     additionalProperties: false,
@@ -87,7 +85,10 @@ exports.handler = async function(event) {
 
     if (!aiResponse.ok) {
       console.error("OpenAI API error:", raw);
-      return jsonResponse(502, { error: "AI生成でエラーが発生しました。" });
+      return jsonResponse(502, {
+        error: "AI生成でエラーが発生しました。",
+        detail: raw
+      });
     }
 
     const data = JSON.parse(raw);
@@ -97,7 +98,10 @@ exports.handler = async function(event) {
     return jsonResponse(200, sanitizeResult(result, words, mode));
   } catch (error) {
     console.error(error);
-    return jsonResponse(500, { error: "生成中にエラーが発生しました。" });
+    return jsonResponse(500, {
+      error: "生成中にエラーが発生しました。",
+      detail: String(error.message || error)
+    });
   }
 };
 
@@ -138,16 +142,6 @@ function validateInput(words, mode) {
     return "結果の出し方が正しくありません。";
   }
 
-  const joined = words.join(" ");
-  const blocked = [
-    /住所|電話番号|メールアドレス|パスワード|クレジットカード/i,
-    /殺す|死ね|自殺|爆弾|薬物|違法/i
-  ];
-
-  if (blocked.some((pattern) => pattern.test(joined))) {
-    return "個人情報や危険な内容は入力しないでください。";
-  }
-
   return null;
 }
 
@@ -157,13 +151,12 @@ function buildSystemPrompt(mode, words) {
   return `
 あなたは「3語で整える」というアプリの診断結果を作るAIです。
 
-このアプリの目的：
+目的：
 3つの言葉から、今の心の向きと今日の整え方を短く整理すること。
 
 大事な考え方：
 当てることより、整理すること。
-3語を心の状態そのものと断定しすぎない。
-「今の心の向きが少し表れているかもしれない」くらいの距離感で書く。
+断定しすぎず、「そういう見方もできる」くらいの距離感で書く。
 
 入力語：
 「${a}」「${b}」「${c}」
@@ -172,46 +165,15 @@ function buildSystemPrompt(mode, words) {
 ${mode}
 
 必ず守ること：
-- 「${a}」「${b}」「${c}」の3語すべてを自然に反映する
-- 文章をきれいにまとめるより、今日の行動が1つ決まる内容にする
-- 占いのように断定しすぎない
+- 3語すべてを自然に反映する
+- 今日の行動が1つ決まる内容にする
 - 医療、治療、病名診断のような表現はしない
 - 説教っぽくしない
-- 「少し」「小さな」「整える」「余白」「気づき」「無理しない」「立ち止まる」を多用しない
-- 毎回同じ型の文章にしない
-
-出力項目：
-type：今日の余白タイプ
-sign：今のサイン
-tuning：今日の整え方
-proposals：3つの提案
-oneLine：今日の一言
-reading：読み解き
-cardTitle：SNSカード用タイトル
-cardMain：SNSカード中央の言葉
-cardSub：SNSカード補足文
+- 同じ表現を繰り返さない
+- JSONだけで返す
 
 余白タイプ例：
-一時避難タイプ
-情報過多タイプ
-整理不足タイプ
-動き出し前タイプ
-人疲れタイプ
-回復優先タイプ
-境界線タイプ
-保留タイプ
-小さな挑戦タイプ
-余白不足タイプ
-
-結果の出し方ごとのルール：
-- 診断として見る：今の状態を冷静にはっきり整理する
-- 行動に変える：今日やること、やらないこと、明日に回すことに落とす
-- 心理学的に見る：認知、感情、注意、負荷、言語化などの観点を入れる
-- 小説風に読む：短い一場面のように客観視する
-- 格言として読む：3語から格言風の一文を作り、短く読み解く
-- 処方箋風に出す：処方、用法、避けたいことのように出す
-
-JSONだけで返してください。
+一時避難タイプ、情報過多タイプ、整理不足タイプ、動き出し前タイプ、人疲れタイプ、回復優先タイプ、境界線タイプ、保留タイプ、小さな挑戦タイプ、余白不足タイプ
 `.trim();
 }
 
@@ -226,23 +188,24 @@ ${a}・${b}・${c}
 ${mode}
 
 再生成：
-${retry ? "はい。前回と違う切り口で作ってください。" : "いいえ。"}
+${retry ? "はい。前回と違う切り口で。" : "いいえ。"}
 
-返すJSON：
+次のJSON形式で返してください。
+
 {
   "type": "今日の余白タイプ",
   "sign": "今のサイン。80字以内",
   "tuning": "今日の整え方。80字以内",
   "proposals": [
-    {"label":"提案1の見出し","text":"具体的な行動。50字以内"},
-    {"label":"提案2の見出し","text":"具体的な行動。50字以内"},
-    {"label":"提案3の見出し","text":"避けること、減らすこと、明日に回すことなど。50字以内"}
+    {"label":"減らすこと","text":"具体的な行動"},
+    {"label":"入れること","text":"具体的な行動"},
+    {"label":"避けること","text":"具体的な行動"}
   ],
-  "oneLine": "今日の一言。35字以内",
+  "oneLine": "今日の一言",
   "reading": "読み解き。120字以内",
   "cardTitle": "SNSカード用タイトル",
-  "cardMain": "SNSカード中央の短い言葉",
-  "cardSub": "SNSカード補足文"
+  "cardMain": "カード中央の短い言葉",
+  "cardSub": "カード補足文"
 }
 `.trim();
 }
@@ -251,6 +214,7 @@ function extractOutputText(data) {
   if (typeof data.output_text === "string") return data.output_text;
 
   const texts = [];
+
   for (const item of data.output || []) {
     for (const content of item.content || []) {
       if (content.type === "output_text" && typeof content.text === "string") {
@@ -266,12 +230,12 @@ function extractOutputText(data) {
 function sanitizeResult(result, words, mode) {
   const [a, b, c] = words;
 
-  const proposals = Array.isArray(result.proposals)
-    ? result.proposals.slice(0, 3).map((p) => ({
-        label: String(p.label || "").trim().slice(0, 20),
-        text: String(p.text || "").trim().slice(0, 80)
-      }))
-    : [];
+  let proposals = Array.isArray(result.proposals) ? result.proposals : [];
+
+  proposals = proposals.slice(0, 3).map((p) => ({
+    label: String(p.label || "").trim().slice(0, 20),
+    text: String(p.text || "").trim().slice(0, 80)
+  }));
 
   while (proposals.length < 3) {
     proposals.push({
@@ -281,7 +245,7 @@ function sanitizeResult(result, words, mode) {
   }
 
   const clean = {
-    type: String(result.type || "一時避難タイプ").trim().slice(0, 40),
+    type: String(result.type || "保留タイプ").trim().slice(0, 40),
     sign: String(result.sign || "").trim().slice(0, 140),
     tuning: String(result.tuning || "").trim().slice(0, 140),
     proposals,
@@ -289,25 +253,9 @@ function sanitizeResult(result, words, mode) {
     reading: String(result.reading || "").trim().slice(0, 220),
     cardTitle: String(result.cardTitle || "今日の余白タイプ").trim().slice(0, 40),
     cardMain: String(result.cardMain || "").trim().slice(0, 80),
-    cardSub: String(result.cardSub || "").trim().slice(0, 80),
+    cardSub: String(result.cardSub || `${a}・${b}・${c}`).trim().slice(0, 80),
     mode
   };
-
-  const allText = [
-    clean.type,
-    clean.sign,
-    clean.tuning,
-    clean.oneLine,
-    clean.reading,
-    clean.cardTitle,
-    clean.cardMain,
-    clean.cardSub,
-    ...clean.proposals.map((p) => p.label + p.text)
-  ].join("");
-
-  if (!allText.includes(a) || !allText.includes(b) || !allText.includes(c)) {
-    clean.reading = `「${a}」「${b}」「${c}」を並べると、今は考えを増やすより、今日やることを一つに絞る方が合いそうです。`;
-  }
 
   if (!clean.sign) {
     clean.sign = `「${a}」「${b}」「${c}」には、今の負荷を一度下げたい感覚が出ています。`;
@@ -321,12 +269,12 @@ function sanitizeResult(result, words, mode) {
     clean.oneLine = "今日の自分に、逃げ場を一つ残す。";
   }
 
-  if (!clean.cardMain) {
-    clean.cardMain = clean.oneLine;
+  if (!clean.reading) {
+    clean.reading = `「${a}」「${b}」「${c}」を並べると、今日は考えを増やすより、行動を一つに絞る方が合いそうです。`;
   }
 
-  if (!clean.cardSub) {
-    clean.cardSub = `${a}・${b}・${c}`;
+  if (!clean.cardMain) {
+    clean.cardMain = clean.oneLine;
   }
 
   return clean;
