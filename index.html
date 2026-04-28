@@ -159,12 +159,22 @@
       background:white;
     }
 
-    .row-buttons,
-    .actions {
+    .row-buttons {
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:10px;
       margin-top:13px;
+    }
+
+    .actions {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .actions .wide {
+      grid-column:1 / -1;
     }
 
     .option-grid {
@@ -255,6 +265,11 @@
 
     .sub-btn.danger {
       color:var(--danger);
+    }
+
+    .sub-btn.wide-action {
+      padding:13px 8px;
+      background:rgba(247,239,200,.72);
     }
 
     .loading {
@@ -353,78 +368,40 @@
       box-shadow:0 16px 30px rgba(120,98,58,.13),0 6px 14px rgba(120,98,58,.06);
     }
 
-    .hint-box {
-      border:1px solid var(--thin);
-      border-radius:24px;
-      background:rgba(255,255,255,.65);
-      padding:15px;
+    .hint-cards {
       display:grid;
       gap:10px;
+      margin-top:8px;
     }
 
-    .hint-item {
-      border-top:1px solid rgba(232,220,205,.9);
-      padding-top:10px;
-      font-size:13px;
+    .hint-card {
+      border:1px solid rgba(232,220,205,.95);
+      border-radius:22px;
+      background:rgba(255,255,255,.72);
+      padding:14px 15px;
+      box-shadow:0 10px 22px rgba(120,98,58,.08);
+    }
+
+    .hint-pill {
+      display:inline-flex;
+      align-items:center;
+      width:fit-content;
+      border-radius:999px;
+      background:var(--soft);
+      color:#695b4d;
+      padding:4px 9px;
+      font-size:11px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .hint-text {
+      margin:0;
       color:#4f473f;
+      font-size:13px;
       line-height:1.8;
       white-space:pre-line;
-    }
-
-    .hint-item:first-child {
-      border-top:none;
-      padding-top:0;
-    }
-
-    .hint-item b {
-      display:block;
-      color:var(--deep);
-      font-size:12px;
-      margin-bottom:4px;
-    }
-
-    .save-card {
-      margin-top:18px;
-      border-radius:30px;
-      padding:24px 22px;
-      background:
-        radial-gradient(circle at 90% 5%,rgba(179,138,85,.30),transparent 33%),
-        linear-gradient(160deg,#2f2923 0%,#46392f 58%,#2b2621 100%);
-      color:white;
-      box-shadow:0 34px 70px rgba(47,41,35,.30),0 14px 30px rgba(47,41,35,.14);
-    }
-
-    .save-card .small-label {
-      color:#d9cbb9;
-    }
-
-    .save-card .words {
-      color:#f7efe6;
-      font-size:14px;
-      letter-spacing:.04em;
-    }
-
-    .save-card h2 {
-      margin:16px 0 10px;
-      font-size:25px;
-      line-height:1.48;
-    }
-
-    .save-card p {
-      margin:0;
-      color:#eadfd2;
-      font-size:14px;
-      line-height:1.9;
-    }
-
-    .save-card .line {
-      margin-top:19px;
-      padding-top:17px;
-      border-top:1px solid rgba(255,255,255,.18);
-      color:white;
-      font-weight:800;
-      font-size:18px;
-      line-height:1.7;
+      word-break:break-word;
     }
 
     .history-list {
@@ -495,9 +472,13 @@
       h1 { font-size:30px; }
 
       .option-grid,
-      .actions,
-      .row-buttons {
+      .row-buttons,
+      .actions {
         grid-template-columns:1fr;
+      }
+
+      .actions .wide {
+        grid-column:auto;
       }
     }
   </style>
@@ -506,7 +487,7 @@
 <body>
   <main class="phone">
     <section class="hero">
-      <div class="badge">✨ 3語から文章の入口を作る｜v3.2</div>
+      <div class="badge">✨ 3語から文章の入口を作る｜v3.3</div>
       <h1>3語で整える</h1>
 
       <p class="tagline">
@@ -631,23 +612,14 @@
 
         <div class="section">
           <h3>広げるヒント</h3>
-          <div id="hints" class="hint-box"></div>
+          <div id="hints" class="hint-cards"></div>
         </div>
 
         <div class="actions">
           <button class="sub-btn" onclick="copyText()">コピーする</button>
           <button class="sub-btn" onclick="generate(true)">もう一度作る</button>
-          <button class="sub-btn" onclick="saveCardAsImage()">カードを画像保存</button>
-          <button class="sub-btn" onclick="resetWords()">別の3語</button>
+          <button class="sub-btn wide wide-action" onclick="resetWords()">別の3語</button>
         </div>
-      </section>
-
-      <section id="saveCard" class="save-card">
-        <span class="small-label">SNS保存カード</span>
-        <div id="cardWords" class="words">駅・雨・イヤホン</div>
-        <h2 id="cardTitle">3語で整える</h2>
-        <p id="cardMain">言葉から文章の入口を作る。</p>
-        <div id="cardSub" class="line">3語で整える</div>
       </section>
     </section>
 
@@ -741,10 +713,7 @@
           `今回の切り口：${a}を印象、${b}を中心、${c}を場面としてつなげています。`,
           `書き直すなら：${b}をもっと具体的な場面にすると、文章に厚みが出ます。`,
           `別の方向：${c}を結末やオチのきっかけにすると、違う文章に育てられます。`
-        ],
-        cardTitle: "3語で整える",
-        cardMain: `${a}・${b}・${c}から文章の入口を作る。`,
-        cardSub: "完成品ではなく、使える途中。"
+        ]
       };
     }
 
@@ -759,19 +728,14 @@
 
       const hintsRoot = document.getElementById("hints");
       const hints = Array.isArray(result.hints) ? result.hints : [];
-
       const labels = ["今回の切り口", "書き直すなら", "別の方向"];
-      hintsRoot.innerHTML = hints.map((text, index) => `
-        <div class="hint-item">
-          <b>${escapeHtml(labels[index] || "ヒント")}</b>
-          ${escapeHtml(text)}
-        </div>
-      `).join("");
 
-      document.getElementById("cardWords").textContent = joined;
-      document.getElementById("cardTitle").textContent = result.cardTitle || result.title || "3語で整える";
-      document.getElementById("cardMain").textContent = result.cardMain || "";
-      document.getElementById("cardSub").textContent = result.cardSub || "3語で整える";
+      hintsRoot.innerHTML = hints.map((text, index) => `
+        <article class="hint-card">
+          <span class="hint-pill">${escapeHtml(labels[index] || "ヒント")}</span>
+          <p class="hint-text">${escapeHtml(text)}</p>
+        </article>
+      `).join("");
 
       currentResult = {
         words,
@@ -862,111 +826,6 @@
 
     function copyText() {
       navigator.clipboard.writeText(currentText()).then(() => showToast("コピーしました"));
-    }
-
-    function saveCardAsImage() {
-      const card = document.getElementById("saveCard");
-      const rect = card.getBoundingClientRect();
-      const scale = 2;
-      const canvas = document.createElement("canvas");
-
-      canvas.width = Math.round(rect.width * scale);
-      canvas.height = Math.round(rect.height * scale);
-
-      const ctx = canvas.getContext("2d");
-      ctx.scale(scale, scale);
-
-      const words = document.getElementById("cardWords").textContent;
-      const title = document.getElementById("cardTitle").textContent;
-      const main = document.getElementById("cardMain").textContent;
-      const sub = document.getElementById("cardSub").textContent;
-
-      const w = rect.width;
-      const h = rect.height;
-      const radius = 30;
-
-      function roundRect(x, y, width, height, r) {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + width - r, y);
-        ctx.quadraticCurveTo(x + width, y, x + width, y + r);
-        ctx.lineTo(x + width, y + height - r);
-        ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
-        ctx.lineTo(x + r, y + height);
-        ctx.quadraticCurveTo(x, y + height, x, y + height - r);
-        ctx.lineTo(x, y + r);
-        ctx.quadraticCurveTo(x, y, x + r, y);
-        ctx.closePath();
-      }
-
-      const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, "#2f2923");
-      grad.addColorStop(.58, "#46392f");
-      grad.addColorStop(1, "#2b2621");
-
-      roundRect(0, 0, w, h, radius);
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      const x = 22;
-      let y = 28;
-
-      ctx.fillStyle = "#d9cbb9";
-      ctx.font = "12px sans-serif";
-      ctx.fillText("SNS保存カード", x, y);
-
-      y += 28;
-      ctx.fillStyle = "#f7efe6";
-      ctx.font = "bold 14px sans-serif";
-      ctx.fillText(words, x, y);
-
-      y += 42;
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 25px sans-serif";
-      y = wrapText(ctx, title, x, y, w - 44, 37);
-
-      y += 10;
-      ctx.fillStyle = "#eadfd2";
-      ctx.font = "bold 20px sans-serif";
-      y = wrapText(ctx, main, x, y, w - 44, 32);
-
-      y += 18;
-      ctx.strokeStyle = "rgba(255,255,255,.18)";
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(w - 22, y);
-      ctx.stroke();
-
-      y += 32;
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 18px sans-serif";
-      wrapText(ctx, sub, x, y, w - 44, 31);
-
-      const link = document.createElement("a");
-      link.download = "3go-de-totonou-card.png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-
-      showToast("カード画像を保存しました");
-    }
-
-    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-      let line = "";
-
-      for (let i = 0; i < text.length; i++) {
-        const testLine = line + text[i];
-
-        if (ctx.measureText(testLine).width > maxWidth && line.length > 0) {
-          ctx.fillText(line, x, y);
-          line = text[i];
-          y += lineHeight;
-        } else {
-          line = testLine;
-        }
-      }
-
-      ctx.fillText(line, x, y);
-      return y + lineHeight;
     }
 
     function saveToHistory(item) {
