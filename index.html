@@ -873,6 +873,11 @@
       btn.disabled = true;
       loading.style.display = "block";
 
+      // 先に入力された3語をカードへ反映します。
+      // AI生成に時間がかかる場合や失敗した場合でも、前回の3語が残らないようにします。
+      const temporaryResult = buildResult(words, retry);
+      setResult(words, temporaryResult);
+
       try {
         const response = await fetch("/.netlify/functions/generate", {
           method: "POST",
@@ -891,13 +896,15 @@
         }
 
         setResult(words, data);
-        document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
+        showToast("AIで生成しました");
       } catch (error) {
         console.error(error);
-        showToast(error.message || "生成に失敗しました");
+        // AI接続で失敗しても、画面は入力された3語で更新された状態を保ちます。
+        showToast("AI生成に失敗したため、仮の結果を表示しました");
       } finally {
         loading.style.display = "none";
         btn.disabled = false;
+        document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }
 
