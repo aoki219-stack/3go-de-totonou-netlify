@@ -72,16 +72,18 @@
 
     .tagline {
       margin:0;
-      font-size:14px;
+      font-size:15px;
       color:#51463d;
-      font-weight:650;
+      font-weight:700;
+      line-height:1.8;
     }
 
     .lead {
       margin:18px auto 0;
       font-size:14px;
       color:var(--sub);
-      max-width:350px;
+      max-width:360px;
+      line-height:1.95;
     }
 
     .panel {
@@ -220,29 +222,6 @@
       margin-bottom:8px;
     }
 
-    .length-row {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:8px;
-      margin-top:10px;
-    }
-
-    .length-btn {
-      border:1px solid var(--thin);
-      border-radius:999px;
-      background:rgba(255,255,255,.72);
-      padding:9px 4px;
-      font-weight:800;
-      cursor:pointer;
-      color:var(--ink);
-    }
-
-    .length-btn.active {
-      background:var(--deep);
-      color:white;
-      border-color:var(--deep);
-    }
-
     .main-btn {
       width:100%;
       margin-top:18px;
@@ -359,14 +338,6 @@
       letter-spacing:.03em;
     }
 
-    .body-text {
-      margin:0;
-      font-size:14px;
-      color:#4f473f;
-      line-height:1.95;
-      white-space:pre-line;
-    }
-
     .draft {
       border:1px solid var(--thin);
       border-radius:26px;
@@ -382,20 +353,34 @@
       box-shadow:0 16px 30px rgba(120,98,58,.13),0 6px 14px rgba(120,98,58,.06);
     }
 
-    .alt-list {
+    .hint-box {
+      border:1px solid var(--thin);
+      border-radius:24px;
+      background:rgba(255,255,255,.65);
+      padding:15px;
       display:grid;
-      gap:8px;
-      margin-top:8px;
+      gap:10px;
     }
 
-    .alt-item {
-      border:1px solid var(--thin);
-      border-radius:18px;
-      background:rgba(255,255,255,.65);
-      padding:10px 12px;
+    .hint-item {
+      border-top:1px solid rgba(232,220,205,.9);
+      padding-top:10px;
       font-size:13px;
       color:#4f473f;
-      line-height:1.7;
+      line-height:1.8;
+      white-space:pre-line;
+    }
+
+    .hint-item:first-child {
+      border-top:none;
+      padding-top:0;
+    }
+
+    .hint-item b {
+      display:block;
+      color:var(--deep);
+      font-size:12px;
+      margin-bottom:4px;
     }
 
     .save-card {
@@ -446,6 +431,13 @@
       display:grid;
       gap:10px;
       margin-top:12px;
+    }
+
+    .history-note {
+      margin:-4px 0 10px;
+      color:var(--sub);
+      font-size:11px;
+      line-height:1.7;
     }
 
     .history-item {
@@ -507,10 +499,6 @@
       .row-buttons {
         grid-template-columns:1fr;
       }
-
-      .length-row {
-        grid-template-columns:repeat(2,1fr);
-      }
     }
   </style>
 </head>
@@ -518,38 +506,46 @@
 <body>
   <main class="phone">
     <section class="hero">
-      <div class="badge">✨ 3語から文章の入口を作る｜v3.1</div>
+      <div class="badge">✨ 3語から文章の入口を作る｜v3.2</div>
       <h1>3語で整える</h1>
-      <p class="tagline">3つの言葉から、書くためのたたき台へ。</p>
-      <p class="lead">
-        ふと浮かんだ言葉。<br>
-        目に留まったもの。<br>
-        なぜか残っている単語。
+
+      <p class="tagline">
+        読むだけだった言葉を、<br>
+        今日は少しだけ作る側へ。
       </p>
+
       <p class="lead">
-        3語を入れるだけで、AIが文章の入口を作ります。<br>
-        完成品ではなく、書き出すための発想補助ツールです。
+        3語で整えるは、<br>
+        日常で目に入った言葉や、<br>
+        ふと浮かんだ単語から、<br>
+        短編小説、随筆、詩、投稿文などの<br>
+        文章のたたき台を作る発想ツールです。
+      </p>
+
+      <p class="lead">
+        完成させる必要はありません。<br>
+        読むだけでも、直しても、広げても大丈夫。
       </p>
     </section>
 
     <section class="panel">
       <div class="panel-head">
         <p class="title">3つの言葉を入れる</p>
-        <span class="hint">例：黄色い・花・散歩</span>
+        <span class="hint">例：駅・雨・イヤホン</span>
       </div>
 
       <div class="inputs">
         <label class="input-wrap">
           <span>01</span>
-          <input id="word1" value="黄色い" placeholder="例：雨">
+          <input id="word1" value="駅" placeholder="例：雨">
         </label>
         <label class="input-wrap">
           <span>02</span>
-          <input id="word2" value="花" placeholder="例：コンビニ">
+          <input id="word2" value="雨" placeholder="例：コンビニ">
         </label>
         <label class="input-wrap">
           <span>03</span>
-          <input id="word3" value="散歩" placeholder="例：ため息">
+          <input id="word3" value="イヤホン" placeholder="例：ため息">
         </label>
       </div>
 
@@ -561,19 +557,42 @@
       <div class="field">
         <label>文章タイプ</label>
         <div class="option-grid">
-          <button class="option active" data-genre="随筆"><b>随筆</b><span>日常から考えを広げる</span></button>
-          <button class="option" data-genre="日記"><b>日記</b><span>自然な記録として書く</span></button>
-          <button class="option" data-genre="短い小説"><b>短い小説</b><span>場面と人物を作る</span></button>
-          <button class="option" data-genre="絵本風"><b>絵本風</b><span>やさしい物語にする</span></button>
-          <button class="option" data-genre="詩"><b>詩</b><span>余韻とリズムで書く</span></button>
-          <button class="option" data-genre="note本文"><b>note本文</b><span>投稿の下書きにする</span></button>
-          <button class="option" data-genre="Instagram投稿"><b>Instagram投稿</b><span>短い行で共感を作る</span></button>
-          <button class="option" data-genre="ミステリー風"><b>ミステリー風</b><span>違和感と謎を作る</span></button>
-          <button class="option" data-genre="俳句・短歌風"><b>俳句・短歌風</b><span>季語や発想も出す</span></button>
-          <button class="option" data-genre="手紙風"><b>手紙風</b><span>誰かに宛てて書く</span></button>
-          <button class="option" data-genre="キャッチコピー"><b>キャッチコピー</b><span>短いコピー案を出す</span></button>
-          <button class="option" data-genre="コラム"><b>コラム</b><span>読み手に視点を渡す</span></button>
-          <button class="option" data-genre="プロット"><b>プロット</b><span>物語や記事の骨組みを作る</span></button>
+          <button class="option active" data-genre="Instagram投稿">
+            <b>Instagram投稿</b><span>短い行で投稿文にする</span>
+          </button>
+          <button class="option" data-genre="note本文">
+            <b>note本文</b><span>読める下書きにする</span>
+          </button>
+          <button class="option" data-genre="日記">
+            <b>日記</b><span>今日の記録として書く</span>
+          </button>
+          <button class="option" data-genre="随筆/コラム風">
+            <b>随筆/コラム風</b><span>日常から考えを広げる</span>
+          </button>
+          <button class="option" data-genre="手紙風">
+            <b>手紙風</b><span>誰かに宛てて書く</span>
+          </button>
+          <button class="option" data-genre="キャッチコピー">
+            <b>キャッチコピー</b><span>短いコピー案にする</span>
+          </button>
+          <button class="option" data-genre="短編小説">
+            <b>短編小説</b><span>小さな物語にする</span>
+          </button>
+          <button class="option" data-genre="ミステリー風">
+            <b>ミステリー風</b><span>違和感と謎を作る</span>
+          </button>
+          <button class="option" data-genre="絵本風">
+            <b>絵本風</b><span>やさしい物語にする</span>
+          </button>
+          <button class="option" data-genre="詩">
+            <b>詩</b><span>余韻とリズムで書く</span>
+          </button>
+          <button class="option" data-genre="俳句・短歌風">
+            <b>俳句・短歌風</b><span>季語や発想も出す</span>
+          </button>
+          <button class="option" data-genre="プロット">
+            <b>プロット</b><span>作品の骨組みを作る</span>
+          </button>
         </div>
       </div>
 
@@ -581,25 +600,9 @@
         <label for="viewpoint">視点</label>
         <select id="viewpoint">
           <option>おまかせ</option>
-          <option>自分目線</option>
-          <option>第三者目線</option>
-          <option>未来の自分</option>
-          <option>過去の自分</option>
-          <option>子どもの目線</option>
-          <option>通りすがりの人</option>
-          <option>物の目線</option>
+          <option>一人称</option>
+          <option>三人称</option>
         </select>
-      </div>
-
-      <div class="field">
-        <label for="lengthInput">文字数</label>
-        <input id="lengthInput" type="number" min="100" max="1000" step="50" value="800">
-        <div class="length-row">
-          <button class="length-btn" data-length="300">300</button>
-          <button class="length-btn" data-length="500">500</button>
-          <button class="length-btn active" data-length="800">800</button>
-          <button class="length-btn" data-length="1000">1000</button>
-        </div>
       </div>
 
       <button id="generateBtn" class="main-btn" onclick="generate()">文章のたたき台を作る</button>
@@ -611,19 +614,14 @@
         <div class="words-row">
           <div>
             <span class="small-label">今日の3語</span>
-            <div id="todayWords" class="words">黄色い・花・散歩</div>
+            <div id="todayWords" class="words">駅・雨・イヤホン</div>
           </div>
-          <span id="genreChip" class="chip">随筆</span>
+          <span id="genreChip" class="chip">Instagram投稿</span>
         </div>
 
         <div class="type-box">
           <span class="small-label">タイトル案</span>
-          <h2 id="title">黄色い花と散歩の途中</h2>
-        </div>
-
-        <div class="section">
-          <h3>今回の切り口</h3>
-          <p id="angle" class="body-text"></p>
+          <h2 id="title">雨の駅で、イヤホンを外す</h2>
         </div>
 
         <div class="section">
@@ -632,13 +630,8 @@
         </div>
 
         <div class="section">
-          <h3>発想メモ</h3>
-          <p id="hintText" class="body-text"></p>
-        </div>
-
-        <div class="section">
-          <h3>別の切り口</h3>
-          <div id="altIdeas" class="alt-list"></div>
+          <h3>広げるヒント</h3>
+          <div id="hints" class="hint-box"></div>
         </div>
 
         <div class="actions">
@@ -651,7 +644,7 @@
 
       <section id="saveCard" class="save-card">
         <span class="small-label">SNS保存カード</span>
-        <div id="cardWords" class="words">黄色い・花・散歩</div>
+        <div id="cardWords" class="words">駅・雨・イヤホン</div>
         <h2 id="cardTitle">3語で整える</h2>
         <p id="cardMain">言葉から文章の入口を作る。</p>
         <div id="cardSub" class="line">3語で整える</div>
@@ -663,6 +656,11 @@
         <p class="title">履歴</p>
         <button class="sub-btn danger" style="width:auto; padding:8px 12px;" onclick="clearHistory()">削除</button>
       </div>
+
+      <p class="history-note">
+        ※PCとスマホの履歴は共有されません。今使っている端末にだけ保存されます。
+      </p>
+
       <div id="history" class="history-list"></div>
     </section>
 
@@ -677,12 +675,12 @@
   <script>
     const API_URL = "https://tiny-frog-e071.aoki219.workers.dev";
 
-    let selectedGenre = "随筆";
+    let selectedGenre = "Instagram投稿";
     let currentResult = null;
 
     const randomPool = {
       color: ["黄色い", "白い", "青い", "赤い", "透明な", "薄暗い", "淡い", "まぶしい", "くすんだ", "銀色の"],
-      object: ["花", "鍵", "コーヒー", "靴", "看板", "窓", "手紙", "レシート", "傘", "時計", "椅子", "ノート"],
+      object: ["花", "鍵", "コーヒー", "靴", "看板", "窓", "手紙", "レシート", "傘", "時計", "椅子", "ノート", "イヤホン"],
       scene: ["散歩", "駅", "帰り道", "コンビニ", "ベンチ", "雨", "朝", "夜", "夕方", "沈黙", "約束", "風"]
     };
 
@@ -692,14 +690,6 @@
         btn.classList.add("active");
         selectedGenre = btn.dataset.genre;
         document.getElementById("genreChip").textContent = selectedGenre;
-      });
-    });
-
-    document.querySelectorAll("[data-length]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll("[data-length]").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById("lengthInput").value = btn.dataset.length;
       });
     });
 
@@ -741,22 +731,16 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function getLength() {
-      const value = Number(document.getElementById("lengthInput").value || 800);
-      return Math.max(100, Math.min(1000, value));
-    }
-
     function fallbackResult(words) {
       const [a, b, c] = words;
+
       return {
         title: `${a}・${b}・${c}から始める文章`,
-        angle: `「${a}」を印象、「${b}」を中心、「${c}」を場面としてつなげる切り口です。`,
-        draft: `「${a}」「${b}」「${c}」。この3つの言葉を並べると、まだ文章になる前の景色が見えてきます。\n\n${b}はただそこにあるものではなく、${a}という印象をまとって、${c}の時間の中に置かれています。ここから先は、日記にも、物語にも、短い投稿にもできます。\n\n大事なのは、この3語を正しく説明することではなく、自分では選ばなかった角度から文章を始めてみることです。`,
-        hint: "完成品として使うより、この中の一文や切り口を拾って、自分の文章に育てるのがおすすめです。",
-        altIdeas: [
-          `${a}を感情の色として書く`,
-          `${b}を語り手にして書く`,
-          `${c}の途中で起きた小さな出来事にする`
+        draft: `「${a}」「${b}」「${c}」。この3つの言葉を並べると、まだ文章になる前の景色が見えてきます。\n\n${b}はただそこにあるものではなく、${a}という印象をまとって、${c}の時間の中に置かれています。\n\nここから先は、投稿にも、物語にも、短い詩にもできます。大事なのは、この3語を正しく説明することではなく、自分では選ばなかった角度から文章を始めてみることです。`,
+        hints: [
+          `今回の切り口：${a}を印象、${b}を中心、${c}を場面としてつなげています。`,
+          `書き直すなら：${b}をもっと具体的な場面にすると、文章に厚みが出ます。`,
+          `別の方向：${c}を結末やオチのきっかけにすると、違う文章に育てられます。`
         ],
         cardTitle: "3語で整える",
         cardMain: `${a}・${b}・${c}から文章の入口を作る。`,
@@ -771,24 +755,28 @@
       document.getElementById("todayWords").textContent = joined;
       document.getElementById("genreChip").textContent = selectedGenre;
       document.getElementById("title").textContent = result.title || "";
-      document.getElementById("angle").textContent = result.angle || "";
       document.getElementById("draft").textContent = result.draft || "";
-      document.getElementById("hintText").textContent = result.hint || "";
 
-      const altRoot = document.getElementById("altIdeas");
-      const alts = Array.isArray(result.altIdeas) ? result.altIdeas : [];
-      altRoot.innerHTML = alts.map(x => `<div class="alt-item">${escapeHtml(x)}</div>`).join("");
+      const hintsRoot = document.getElementById("hints");
+      const hints = Array.isArray(result.hints) ? result.hints : [];
+
+      const labels = ["今回の切り口", "書き直すなら", "別の方向"];
+      hintsRoot.innerHTML = hints.map((text, index) => `
+        <div class="hint-item">
+          <b>${escapeHtml(labels[index] || "ヒント")}</b>
+          ${escapeHtml(text)}
+        </div>
+      `).join("");
 
       document.getElementById("cardWords").textContent = joined;
       document.getElementById("cardTitle").textContent = result.cardTitle || result.title || "3語で整える";
-      document.getElementById("cardMain").textContent = result.cardMain || result.angle || "";
+      document.getElementById("cardMain").textContent = result.cardMain || "";
       document.getElementById("cardSub").textContent = result.cardSub || "3語で整える";
 
       currentResult = {
         words,
         genre: selectedGenre,
         viewpoint: document.getElementById("viewpoint").value,
-        length: getLength(),
         ...result,
         createdAt: new Date().toISOString()
       };
@@ -824,7 +812,6 @@
             words,
             genre: selectedGenre,
             viewpoint: document.getElementById("viewpoint").value,
-            length: getLength(),
             retry
           })
         });
@@ -850,6 +837,7 @@
 
     function currentText() {
       const r = currentResult || {};
+      const hints = Array.isArray(r.hints) ? r.hints : [];
 
       return [
         "3語：",
@@ -861,23 +849,14 @@
         "視点：",
         r.viewpoint || document.getElementById("viewpoint").value,
         "",
-        "文字数：",
-        String(r.length || getLength()),
-        "",
         "タイトル案：",
         r.title || "",
-        "",
-        "今回の切り口：",
-        r.angle || "",
         "",
         "たたき台：",
         r.draft || "",
         "",
-        "発想メモ：",
-        r.hint || "",
-        "",
-        "別の切り口：",
-        (r.altIdeas || []).map((x, i) => `${i + 1}. ${x}`).join("\n")
+        "広げるヒント：",
+        hints.map((x, i) => `${i + 1}. ${x}`).join("\n")
       ].join("\n");
     }
 
@@ -992,10 +971,10 @@
 
     function saveToHistory(item) {
       const history = getHistory();
-      const signature = `${item.words.join("・")}__${item.genre}__${item.viewpoint}__${item.length}`;
+      const signature = `${item.words.join("・")}__${item.genre}__${item.viewpoint}`;
 
       const filtered = history.filter(old => {
-        const oldSignature = `${(old.words || []).join("・")}__${old.genre}__${old.viewpoint}__${old.length}`;
+        const oldSignature = `${(old.words || []).join("・")}__${old.genre}__${old.viewpoint}`;
         return oldSignature !== signature;
       });
 
@@ -1034,18 +1013,13 @@
       if (!item) return;
 
       setWords(item.words || ["", "", ""]);
-      selectedGenre = item.genre || "随筆";
+      selectedGenre = item.genre || "Instagram投稿";
 
       document.querySelectorAll("[data-genre]").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.genre === selectedGenre);
       });
 
       document.getElementById("viewpoint").value = item.viewpoint || "おまかせ";
-      document.getElementById("lengthInput").value = item.length || 800;
-
-      document.querySelectorAll("[data-length]").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.length === String(item.length || 800));
-      });
 
       setResult(item.words, item, { saveHistory: false });
       document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1074,8 +1048,8 @@
     }
 
     setResult(
-      ["黄色い", "花", "散歩"],
-      fallbackResult(["黄色い", "花", "散歩"]),
+      ["駅", "雨", "イヤホン"],
+      fallbackResult(["駅", "雨", "イヤホン"]),
       { saveHistory: false }
     );
 
