@@ -3,195 +3,553 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3語で整える v2.0</title>
+  <title>3語で整える</title>
   <style>
     :root {
-      --bg: #fbf6d8;
-      --paper: #fffef2;
-      --card: rgba(255, 254, 244, .94);
-      --ink: #2d2924;
-      --sub: #6f665c;
-      --thin: #eadfba;
-      --soft: #f7efc8;
-      --deep: #3d342c;
-      --deep2: #51463d;
-      --gold: #b38a55;
-      --danger: #9b4d3f;
-      --shadow: 0 28px 70px rgba(50, 42, 33, .18);
+      --bg:#fbf6d8;
+      --card:rgba(255,254,244,.94);
+      --ink:#2d2924;
+      --sub:#6f665c;
+      --thin:#eadfba;
+      --soft:#f7efc8;
+      --deep:#3d342c;
+      --gold:#b38a55;
+      --danger:#9b4d3f;
+      --shadow:0 28px 70px rgba(50,42,33,.18);
     }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+
+    * { box-sizing:border-box; }
+
+    html { scroll-behavior:smooth; }
+
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
-      color: var(--ink);
+      margin:0;
+      min-height:100vh;
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","YuGothic","Noto Sans JP",sans-serif;
+      color:var(--ink);
       background:
         radial-gradient(circle at 20% 0%, rgba(255,255,255,.94), transparent 34%),
         radial-gradient(circle at 90% 8%, rgba(243,220,120,.26), transparent 30%),
-        linear-gradient(180deg, #fffdf0 0%, var(--bg) 58%, #f7efbf 100%);
-      line-height: 1.85;
+        linear-gradient(180deg,#fffdf0 0%,var(--bg) 58%,#f7efbf 100%);
+      line-height:1.85;
     }
-    .phone { width: min(440px, 100%); margin: 0 auto; padding: 22px 16px 48px; }
+
+    .phone {
+      width:min(480px,100%);
+      margin:0 auto;
+      padding:22px 16px 48px;
+    }
+
     .hero {
-      position: relative; overflow: hidden; border: 1px solid rgba(232,220,205,.9);
-      border-radius: 34px; background: linear-gradient(145deg, rgba(255,255,255,.86), rgba(255,252,233,.80)),
-      radial-gradient(circle at bottom right, rgba(232,200,83,.14), transparent 40%);
-      box-shadow: var(--shadow); padding: 28px 22px 26px; text-align: center;
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(232,220,205,.9);
+      border-radius:34px;
+      background:
+        linear-gradient(145deg,rgba(255,255,255,.86),rgba(255,252,233,.80)),
+        radial-gradient(circle at bottom right,rgba(232,200,83,.14),transparent 40%);
+      box-shadow:var(--shadow);
+      padding:28px 22px 26px;
+      text-align:center;
     }
-    .hero:before {
-      content: ""; position: absolute; top: -60px; right: -45px; width: 130px; height: 130px;
-      border-radius: 50%; background: rgba(232,200,83,.14); filter: blur(1px);
-    }
+
     .badge {
-      display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px;
-      border: 1px solid var(--thin); border-radius: 999px; background: rgba(255,255,255,.8);
-      font-size: 12px; color: var(--sub); position: relative; z-index: 1;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:7px 13px;
+      border:1px solid var(--thin);
+      border-radius:999px;
+      background:rgba(255,255,255,.8);
+      font-size:12px;
+      color:var(--sub);
     }
-    h1 { margin: 17px 0 7px; font-size: 35px; letter-spacing: .04em; line-height: 1.25; }
-    .tagline { margin: 0; font-size: 14px; color: var(--deep2); font-weight: 650; }
-    .lead { margin: 18px auto 0; font-size: 14px; color: var(--sub); max-width: 330px; }
+
+    h1 {
+      margin:17px 0 7px;
+      font-size:35px;
+      letter-spacing:.04em;
+      line-height:1.25;
+    }
+
+    .tagline {
+      margin:0;
+      font-size:14px;
+      color:#51463d;
+      font-weight:650;
+    }
+
+    .lead {
+      margin:18px auto 0;
+      font-size:14px;
+      color:var(--sub);
+      max-width:350px;
+    }
+
     .panel {
-      margin-top: 18px; padding: 20px; border: 1px solid var(--thin); border-radius: 30px;
-      background: var(--card); box-shadow: 0 24px 52px rgba(71,57,38,.18), 0 10px 24px rgba(71,57,38,.10);
-      backdrop-filter: blur(10px);
+      margin-top:18px;
+      padding:20px;
+      border:1px solid var(--thin);
+      border-radius:30px;
+      background:var(--card);
+      box-shadow:0 24px 52px rgba(71,57,38,.18),0 10px 24px rgba(71,57,38,.10);
+      backdrop-filter:blur(10px);
     }
-    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 13px; }
-    .title { font-size: 14px; font-weight: 800; margin: 0; letter-spacing: .03em; }
-    .hint { font-size: 11px; color: var(--sub); white-space: nowrap; }
-    .inputs { display: grid; gap: 10px; }
-    .input-wrap { position: relative; }
+
+    .panel-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:13px;
+    }
+
+    .title {
+      font-size:14px;
+      font-weight:800;
+      margin:0;
+      letter-spacing:.03em;
+    }
+
+    .hint {
+      font-size:11px;
+      color:var(--sub);
+      white-space:nowrap;
+    }
+
+    .inputs {
+      display:grid;
+      gap:10px;
+    }
+
+    .input-wrap {
+      position:relative;
+    }
+
     .input-wrap span {
-      position: absolute; top: 50%; left: 14px; transform: translateY(-50%);
-      font-size: 12px; color: var(--gold); font-weight: 800;
+      position:absolute;
+      top:50%;
+      left:14px;
+      transform:translateY(-50%);
+      font-size:12px;
+      color:var(--gold);
+      font-weight:800;
     }
-    input {
-      width: 100%; border: 1px solid var(--thin); border-radius: 20px; background: rgba(255,255,255,.72);
-      padding: 13px 15px 13px 42px; font-size: 16px; color: var(--ink); outline: none;
-      transition: .18s; font-family: inherit;
+
+    input, select {
+      width:100%;
+      border:1px solid var(--thin);
+      border-radius:20px;
+      background:rgba(255,255,255,.72);
+      padding:13px 15px;
+      font-size:16px;
+      color:var(--ink);
+      outline:none;
+      transition:.18s;
+      font-family:inherit;
     }
-    input:focus {
-      border-color: #c9aa7d; box-shadow: 0 0 0 4px rgba(179,138,85,.14); background: white;
+
+    .input-wrap input {
+      padding-left:42px;
     }
-    .mode-area { margin-top: 18px; }
-    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 10px; }
-    .mode {
-      border: 1px solid var(--thin); background: rgba(255,255,255,.74); border-radius: 19px;
-      padding: 12px; min-height: 82px; text-align: left; cursor: pointer; transition: .18s; color: var(--ink);
+
+    input:focus, select:focus {
+      border-color:#c9aa7d;
+      box-shadow:0 0 0 4px rgba(179,138,85,.14);
+      background:white;
     }
-    .mode b { display: block; font-size: 13px; margin-bottom: 4px; }
-    .mode span { display: block; font-size: 11px; color: var(--sub); line-height: 1.55; }
-    .mode.active {
-      background: var(--deep); border-color: var(--deep); color: white; transform: translateY(-1px);
-      box-shadow: 0 12px 24px rgba(61,52,44,.18);
+
+    .row-buttons,
+    .actions {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:13px;
     }
-    .mode.active span { color: #e9dfd4; }
-    .row-buttons, .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 13px; }
+
+    .option-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+      margin-top:10px;
+    }
+
+    .option {
+      border:1px solid var(--thin);
+      background:rgba(255,255,255,.74);
+      border-radius:19px;
+      padding:12px;
+      min-height:76px;
+      text-align:left;
+      cursor:pointer;
+      transition:.18s;
+      color:var(--ink);
+    }
+
+    .option b {
+      display:block;
+      font-size:13px;
+      margin-bottom:4px;
+    }
+
+    .option span {
+      display:block;
+      font-size:11px;
+      color:var(--sub);
+      line-height:1.55;
+    }
+
+    .option.active {
+      background:var(--deep);
+      border-color:var(--deep);
+      color:white;
+      transform:translateY(-1px);
+      box-shadow:0 12px 24px rgba(61,52,44,.18);
+    }
+
+    .option.active span {
+      color:#e9dfd4;
+    }
+
+    .field {
+      margin-top:18px;
+    }
+
+    .field label {
+      display:block;
+      font-size:14px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .length-row {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .length-btn {
+      border:1px solid var(--thin);
+      border-radius:999px;
+      background:rgba(255,255,255,.72);
+      padding:9px 4px;
+      font-weight:800;
+      cursor:pointer;
+      color:var(--ink);
+    }
+
+    .length-btn.active {
+      background:var(--deep);
+      color:white;
+      border-color:var(--deep);
+    }
+
     .main-btn {
-      width: 100%; margin-top: 18px; border: none; border-radius: 22px; padding: 15px 18px;
-      background: linear-gradient(135deg, var(--deep), #5b4b3e); color: white; font-size: 16px;
-      font-weight: 800; cursor: pointer; box-shadow: 0 18px 34px rgba(61,52,44,.26);
+      width:100%;
+      margin-top:18px;
+      border:none;
+      border-radius:22px;
+      padding:15px 18px;
+      background:linear-gradient(135deg,var(--deep),#5b4b3e);
+      color:white;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 18px 34px rgba(61,52,44,.26);
     }
-    .main-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    .main-btn:disabled {
+      opacity:.45;
+      cursor:not-allowed;
+    }
+
     .sub-btn {
-      border: 1px solid var(--thin); border-radius: 20px; padding: 12px 8px; background: rgba(255,255,255,.7);
-      color: var(--ink); font-weight: 750; cursor: pointer; box-shadow: 0 10px 20px rgba(71,57,38,.10);
-      font-size: 13px;
+      border:1px solid var(--thin);
+      border-radius:20px;
+      padding:12px 8px;
+      background:rgba(255,255,255,.7);
+      color:var(--ink);
+      font-weight:750;
+      cursor:pointer;
+      box-shadow:0 10px 20px rgba(71,57,38,.10);
+      font-size:13px;
     }
-    .sub-btn.danger { color: var(--danger); }
-    .loading { display: none; text-align: center; color: var(--sub); font-size: 13px; margin-top: 12px; }
-    .dots:after { content: ""; animation: dots 1.2s infinite; }
-    @keyframes dots { 0% { content: ""; } 33% { content: "。"; } 66% { content: "。。"; } 100% { content: "。。。"; } }
-    .result { display: block; scroll-margin-top: 18px; }
-    .words-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
-    .small-label { display: block; color: var(--sub); font-size: 12px; line-height: 1.3; margin-bottom: 5px; }
-    .words { font-size: 17px; font-weight: 800; }
+
+    .sub-btn.danger {
+      color:var(--danger);
+    }
+
+    .loading {
+      display:none;
+      text-align:center;
+      color:var(--sub);
+      font-size:13px;
+      margin-top:12px;
+    }
+
+    .dots:after {
+      content:"";
+      animation:dots 1.2s infinite;
+    }
+
+    @keyframes dots {
+      0% { content:""; }
+      33% { content:"。"; }
+      66% { content:"。。"; }
+      100% { content:"。。。"; }
+    }
+
+    .result {
+      display:block;
+      scroll-margin-top:18px;
+    }
+
+    .words-row {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .small-label {
+      display:block;
+      color:var(--sub);
+      font-size:12px;
+      line-height:1.3;
+      margin-bottom:5px;
+    }
+
+    .words {
+      font-size:17px;
+      font-weight:800;
+    }
+
     .chip {
-      display: inline-flex; align-items: center; border-radius: 999px; background: var(--soft);
-      color: #6a5f54; padding: 6px 10px; font-size: 11px; white-space: nowrap;
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      background:var(--soft);
+      color:#6a5f54;
+      padding:6px 10px;
+      font-size:11px;
+      white-space:nowrap;
     }
+
     .type-box {
-      border-radius: 26px; padding: 18px; background: linear-gradient(135deg, rgba(247,239,200,1), rgba(255,250,226,1));
-      border: 1px solid rgba(232,220,205,.7); box-shadow: 0 16px 30px rgba(120,98,58,.14), 0 6px 14px rgba(120,98,58,.07);
+      border-radius:26px;
+      padding:18px;
+      background:linear-gradient(135deg,rgba(247,239,200,1),rgba(255,250,226,1));
+      border:1px solid rgba(232,220,205,.7);
+      box-shadow:0 16px 30px rgba(120,98,58,.14),0 6px 14px rgba(120,98,58,.07);
     }
-    .type-box h2 { margin: 0; font-size: 22px; line-height: 1.5; }
-    .section { margin-top: 18px; }
-    .section h3 { margin: 0 0 8px; font-size: 15px; letter-spacing: .03em; }
-    .body-text { margin: 0; font-size: 14px; color: #4f473f; line-height: 1.95; white-space: pre-line; }
-    .proposal-box {
-      border: 1px solid var(--thin); border-radius: 26px; background: rgba(255,255,255,.78);
-      padding: 16px; box-shadow: 0 16px 30px rgba(120,98,58,.13), 0 6px 14px rgba(120,98,58,.06);
+
+    .type-box h2 {
+      margin:0;
+      font-size:22px;
+      line-height:1.5;
     }
-    .proposal-line { padding: 11px 0; border-top: 1px solid rgba(232,220,205,.85); font-size: 14px; color: #4f473f; line-height: 1.8; }
-    .proposal-line:first-of-type { border-top: none; }
-    .proposal-line b { color: var(--deep); margin-right: 4px; }
-    .phrase { margin-top: 18px; text-align: center; padding: 18px 10px 4px; }
-    .phrase strong { display: block; font-size: 22px; line-height: 1.65; letter-spacing: .02em; }
+
+    .section {
+      margin-top:18px;
+    }
+
+    .section h3 {
+      margin:0 0 8px;
+      font-size:15px;
+      letter-spacing:.03em;
+    }
+
+    .body-text {
+      margin:0;
+      font-size:14px;
+      color:#4f473f;
+      line-height:1.95;
+      white-space:pre-line;
+    }
+
+    .draft {
+      border:1px solid var(--thin);
+      border-radius:26px;
+      background:rgba(255,255,255,.78);
+      padding:18px;
+      font-size:15px;
+      color:#3f3832;
+      line-height:2;
+      white-space:pre-line;
+      box-shadow:0 16px 30px rgba(120,98,58,.13),0 6px 14px rgba(120,98,58,.06);
+    }
+
+    .alt-list {
+      display:grid;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .alt-item {
+      border:1px solid var(--thin);
+      border-radius:18px;
+      background:rgba(255,255,255,.65);
+      padding:10px 12px;
+      font-size:13px;
+      color:#4f473f;
+      line-height:1.7;
+    }
+
     .save-card {
-      position: relative; overflow: hidden; margin-top: 18px; border-radius: 30px; padding: 24px 22px;
-      background: radial-gradient(circle at 90% 5%, rgba(179,138,85,.30), transparent 33%),
-      linear-gradient(160deg, #2f2923 0%, #46392f 58%, #2b2621 100%);
-      color: white; box-shadow: 0 34px 70px rgba(47,41,35,.30), 0 14px 30px rgba(47,41,35,.14);
+      position:relative;
+      overflow:hidden;
+      margin-top:18px;
+      border-radius:30px;
+      padding:24px 22px;
+      background:
+        radial-gradient(circle at 90% 5%,rgba(179,138,85,.30),transparent 33%),
+        linear-gradient(160deg,#2f2923 0%,#46392f 58%,#2b2621 100%);
+      color:white;
+      box-shadow:0 34px 70px rgba(47,41,35,.30),0 14px 30px rgba(47,41,35,.14);
     }
-    .save-card:after {
-      content: ""; position: absolute; left: -38px; bottom: -54px; width: 150px; height: 150px;
-      border-radius: 50%; background: rgba(255,255,255,.06);
+
+    .save-card .small-label {
+      color:#d9cbb9;
     }
-    .save-card .small-label { color: #d9cbb9; }
-    .save-card .words { color: #f7efe6; font-size: 14px; letter-spacing: .04em; }
-    .save-card h2 { margin: 16px 0 10px; font-size: 25px; line-height: 1.48; }
-    .save-card p { margin: 0; color: #eadfd2; font-size: 14px; line-height: 1.9; }
+
+    .save-card .words {
+      color:#f7efe6;
+      font-size:14px;
+      letter-spacing:.04em;
+    }
+
+    .save-card h2 {
+      margin:16px 0 10px;
+      font-size:25px;
+      line-height:1.48;
+    }
+
+    .save-card p {
+      margin:0;
+      color:#eadfd2;
+      font-size:14px;
+      line-height:1.9;
+    }
+
     .save-card .line {
-      margin-top: 19px; padding-top: 17px; border-top: 1px solid rgba(255,255,255,.18);
-      color: #fff; font-weight: 800; font-size: 18px; line-height: 1.7;
+      margin-top:19px;
+      padding-top:17px;
+      border-top:1px solid rgba(255,255,255,.18);
+      color:white;
+      font-weight:800;
+      font-size:18px;
+      line-height:1.7;
     }
-    .history-list { display: grid; gap: 10px; margin-top: 12px; }
+
+    .history-list {
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+
     .history-item {
-      border: 1px solid var(--thin); border-radius: 20px; padding: 12px; background: rgba(255,255,255,.62);
-      cursor: pointer; transition: .18s;
+      border:1px solid var(--thin);
+      border-radius:20px;
+      padding:12px;
+      background:rgba(255,255,255,.62);
+      cursor:pointer;
     }
-    .history-item b { display: block; font-size: 13px; margin-bottom: 4px; }
-    .history-item span { display: block; font-size: 12px; color: var(--sub); line-height: 1.55; }
-    .empty { color: var(--sub); font-size: 13px; text-align: center; padding: 10px 0 2px; }
-    .notice { margin: 18px 10px 0; text-align: center; color: var(--sub); font-size: 12px; line-height: 1.8; }
+
+    .history-item b {
+      display:block;
+      font-size:13px;
+      margin-bottom:4px;
+    }
+
+    .history-item span {
+      display:block;
+      font-size:12px;
+      color:var(--sub);
+      line-height:1.55;
+    }
+
+    .empty {
+      color:var(--sub);
+      font-size:13px;
+      text-align:center;
+      padding:10px 0 2px;
+    }
+
+    .notice {
+      margin:18px 10px 0;
+      text-align:center;
+      color:var(--sub);
+      font-size:12px;
+      line-height:1.8;
+    }
+
     .toast {
-      display: none; position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
-      background: rgba(45,41,36,.94); color: white; border-radius: 999px; padding: 10px 15px;
-      font-size: 13px; box-shadow: 0 12px 32px rgba(0,0,0,.18); z-index: 5;
+      display:none;
+      position:fixed;
+      left:50%;
+      bottom:24px;
+      transform:translateX(-50%);
+      background:rgba(45,41,36,.94);
+      color:white;
+      border-radius:999px;
+      padding:10px 15px;
+      font-size:13px;
+      box-shadow:0 12px 32px rgba(0,0,0,.18);
+      z-index:5;
     }
-    @media (max-width: 360px) {
-      h1 { font-size: 30px; }
-      .mode-grid, .actions, .row-buttons { grid-template-columns: 1fr; }
+
+    @media (max-width:360px) {
+      h1 { font-size:30px; }
+      .option-grid,
+      .actions,
+      .row-buttons {
+        grid-template-columns:1fr;
+      }
+      .length-row {
+        grid-template-columns:repeat(2,1fr);
+      }
     }
   </style>
 </head>
+
 <body>
   <main class="phone">
     <section class="hero">
-      <div class="badge">✨ 診断したら、少しすっきりするアプリ｜v2.0</div>
+      <div class="badge">✨ 3語から文章の入口を作る｜v3.0</div>
       <h1>3語で整える</h1>
-      <p class="tagline">3つの言葉から、今の心の向きと今日の整え方へ。</p>
+      <p class="tagline">3つの言葉から、書くためのたたき台へ。</p>
       <p class="lead">
-        今、頭に浮かんだもの。<br>
-        ふと目に留まったもの。<br>
-        なぜか気になった言葉。
+        ふと浮かんだ言葉。<br>
+        目に留まったもの。<br>
+        なぜか残っている単語。
       </p>
       <p class="lead">
-        深く考えずに、3つだけ入力してください。<br>
-        当てるためではなく、今の自分を短く整理するための診断です。
+        3語を入れるだけで、AIが文章の入口を作ります。<br>
+        完成品ではなく、書き出すための発想補助ツールです。
       </p>
     </section>
 
     <section class="panel">
       <div class="panel-head">
         <p class="title">3つの言葉を入れる</p>
-        <span class="hint">例：白い・看板・信号</span>
+        <span class="hint">例：黄色い・花・散歩</span>
       </div>
 
       <div class="inputs">
-        <label class="input-wrap"><span>01</span><input id="word1" value="白い" placeholder="例：雨"></label>
-        <label class="input-wrap"><span>02</span><input id="word2" value="看板" placeholder="例：コンビニ"></label>
-        <label class="input-wrap"><span>03</span><input id="word3" value="信号" placeholder="例：ため息"></label>
+        <label class="input-wrap">
+          <span>01</span>
+          <input id="word1" value="黄色い" placeholder="例：雨">
+        </label>
+        <label class="input-wrap">
+          <span>02</span>
+          <input id="word2" value="花" placeholder="例：コンビニ">
+        </label>
+        <label class="input-wrap">
+          <span>03</span>
+          <input id="word3" value="散歩" placeholder="例：ため息">
+        </label>
       </div>
 
       <div class="row-buttons">
@@ -199,20 +557,53 @@
         <button class="sub-btn" onclick="clearInputs()">入力を消す</button>
       </div>
 
-      <div class="mode-area">
-        <p class="title">結果の出し方を選ぶ</p>
-        <div class="mode-grid">
-          <button class="mode active" data-mode="診断として見る"><b>診断として見る</b><span>今の状態を冷静に整理する</span></button>
-          <button class="mode" data-mode="行動に変える"><b>行動に変える</b><span>今日やることに落とす</span></button>
-          <button class="mode" data-mode="心理学的に見る"><b>心理学的に見る</b><span>心の仕組みとして読む</span></button>
-          <button class="mode" data-mode="小説風に読む"><b>小説風に読む</b><span>一場面として客観視する</span></button>
-          <button class="mode" data-mode="格言として読む"><b>格言として読む</b><span>3語から一言を作る</span></button>
-          <button class="mode" data-mode="処方箋風に出す"><b>処方箋風に出す</b><span>今日の整え方を処方する</span></button>
+      <div class="field">
+        <label>文章タイプ</label>
+        <div class="option-grid" id="genreGrid">
+          <button class="option active" data-genre="随筆"><b>随筆</b><span>日常から考えを広げる</span></button>
+          <button class="option" data-genre="日記"><b>日記</b><span>自然な記録として書く</span></button>
+          <button class="option" data-genre="短い小説"><b>短い小説</b><span>場面と人物を作る</span></button>
+          <button class="option" data-genre="絵本風"><b>絵本風</b><span>やさしい物語にする</span></button>
+          <button class="option" data-genre="詩"><b>詩</b><span>余韻とリズムで書く</span></button>
+          <button class="option" data-genre="note本文"><b>note本文</b><span>投稿の下書きにする</span></button>
+          <button class="option" data-genre="Instagram投稿"><b>Instagram投稿</b><span>短い行で共感を作る</span></button>
+          <button class="option" data-genre="ミステリー風"><b>ミステリー風</b><span>違和感と謎を作る</span></button>
+          <button class="option" data-genre="俳句・短歌風"><b>俳句・短歌風</b><span>季語や発想も出す</span></button>
+          <button class="option" data-genre="手紙風"><b>手紙風</b><span>誰かに宛てて書く</span></button>
+          <button class="option" data-genre="キャッチコピー"><b>キャッチコピー</b><span>短いコピー案を出す</span></button>
+          <button class="option" data-genre="コラム"><b>コラム</b><span>読み手に視点を渡す</span></button>
         </div>
       </div>
 
-      <button id="generateBtn" class="main-btn" onclick="generate()">今日の診断を作る</button>
-      <div id="loading" class="loading dots">3つの言葉から、今日の状態を読み解いています</div>
+      <div class="field">
+        <label for="viewpoint">視点</label>
+        <select id="viewpoint">
+          <option>おまかせ</option>
+          <option>自分目線</option>
+          <option>第三者目線</option>
+          <option>未来の自分</option>
+          <option>過去の自分</option>
+          <option>子どもの目線</option>
+          <option>通りすがりの人</option>
+          <option>物の目線</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="lengthInput">文字数</label>
+        <input id="lengthInput" type="number" min="100" max="3000" step="50" value="800">
+        <div class="length-row">
+          <button class="length-btn" data-length="300">300</button>
+          <button class="length-btn" data-length="500">500</button>
+          <button class="length-btn active" data-length="800">800</button>
+          <button class="length-btn" data-length="1000">1000</button>
+          <button class="length-btn" data-length="1500">1500</button>
+          <button class="length-btn" data-length="2000">2000</button>
+        </div>
+      </div>
+
+      <button id="generateBtn" class="main-btn" onclick="generate()">文章のたたき台を作る</button>
+      <div id="loading" class="loading dots">3語から文章の入口を作っています</div>
     </section>
 
     <section id="result" class="result">
@@ -220,43 +611,34 @@
         <div class="words-row">
           <div>
             <span class="small-label">今日の3語</span>
-            <div id="todayWords" class="words">白い・看板・信号</div>
+            <div id="todayWords" class="words">黄色い・花・散歩</div>
           </div>
-          <span id="modeChip" class="chip">診断として見る</span>
+          <span id="genreChip" class="chip">随筆</span>
         </div>
 
         <div class="type-box">
-          <span class="small-label">今日の余白タイプ</span>
-          <h2 id="type">保留タイプ</h2>
+          <span class="small-label">タイトル案</span>
+          <h2 id="title">黄色い花と散歩の途中</h2>
         </div>
 
         <div class="section">
-          <h3>今のサイン</h3>
-          <p id="sign" class="body-text"></p>
+          <h3>今回の切り口</h3>
+          <p id="angle" class="body-text"></p>
         </div>
 
         <div class="section">
-          <h3>今日の整え方</h3>
-          <p id="tuning" class="body-text"></p>
+          <h3>たたき台</h3>
+          <div id="draft" class="draft"></div>
         </div>
 
         <div class="section">
-          <h3 id="proposalTitle">3つの提案</h3>
-          <div class="proposal-box">
-            <div class="proposal-line"><b id="proposalLabel1"></b><span id="proposalText1"></span></div>
-            <div class="proposal-line"><b id="proposalLabel2"></b><span id="proposalText2"></span></div>
-            <div class="proposal-line"><b id="proposalLabel3"></b><span id="proposalText3"></span></div>
-          </div>
-        </div>
-
-        <div class="phrase">
-          <span class="small-label">今日の一言</span>
-          <strong id="oneLine"></strong>
+          <h3>発想メモ</h3>
+          <p id="hintText" class="body-text"></p>
         </div>
 
         <div class="section">
-          <h3>読み解き</h3>
-          <p id="reading" class="body-text"></p>
+          <h3>別の切り口</h3>
+          <div id="altIdeas" class="alt-list"></div>
         </div>
 
         <div class="actions">
@@ -269,9 +651,9 @@
 
       <section id="saveCard" class="save-card">
         <span class="small-label">SNS保存カード</span>
-        <div id="cardWords" class="words">白い・看板・信号</div>
-        <h2 id="cardTitle">今日の余白タイプ</h2>
-        <p id="cardMain">急がない選択が、今日の自分を助ける。</p>
+        <div id="cardWords" class="words">黄色い・花・散歩</div>
+        <h2 id="cardTitle">3語で整える</h2>
+        <p id="cardMain">言葉から文章の入口を作る。</p>
         <div id="cardSub" class="line">3語で整える</div>
       </section>
     </section>
@@ -285,36 +667,37 @@
     </section>
 
     <p class="notice">
-      これは医療的な診断ではありません。3つの言葉をきっかけに、今日の状態を整理するためのメモです。<br>
-      性格や未来を断定するものではありません。
+      AIが作るのは完成品ではなく、文章を書くためのたたき台です。<br>
+      そのまま使っても、直して自分の文章にしてもOKです。
     </p>
   </main>
 
   <div id="toast" class="toast">コピーしました</div>
 
   <script>
-    let selectedMode = "診断として見る";
+    let selectedGenre = "随筆";
     let currentResult = null;
 
-    const randomSets = [
-      ["雨", "コンビニ", "ため息"],
-      ["白い", "看板", "信号"],
-      ["スマホ", "夜", "通知"],
-      ["コーヒー", "朝", "沈黙"],
-      ["靴", "駅", "背中"],
-      ["窓", "風", "記憶"],
-      ["財布", "レシート", "帰り道"],
-      ["桜", "ベンチ", "約束"],
-      ["鍵", "玄関", "月曜日"],
-      ["カーテン", "光", "深呼吸"]
-    ];
+    const randomPool = {
+      color: ["黄色い", "白い", "青い", "赤い", "透明な", "薄暗い", "淡い", "まぶしい", "くすんだ", "銀色の"],
+      object: ["花", "鍵", "コーヒー", "靴", "看板", "窓", "手紙", "レシート", "傘", "時計", "椅子", "ノート"],
+      scene: ["散歩", "駅", "帰り道", "コンビニ", "ベンチ", "雨", "朝", "夜", "夕方", "沈黙", "約束", "風"]
+    };
 
-    document.querySelectorAll(".mode").forEach(btn => {
+    document.querySelectorAll("[data-genre]").forEach(btn => {
       btn.addEventListener("click", () => {
-        document.querySelectorAll(".mode").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll("[data-genre]").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-        selectedMode = btn.dataset.mode;
-        document.getElementById("modeChip").textContent = selectedMode;
+        selectedGenre = btn.dataset.genre;
+        document.getElementById("genreChip").textContent = selectedGenre;
+      });
+    });
+
+    document.querySelectorAll("[data-length]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-length]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("lengthInput").value = btn.dataset.length;
       });
     });
 
@@ -336,139 +719,14 @@
       return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function fallbackResult(words, retry = false) {
-      const [a, b, c] = words;
-      const types = ["一時避難タイプ", "情報過多タイプ", "整理不足タイプ", "動き出し前タイプ", "人疲れタイプ", "回復優先タイプ", "境界線タイプ", "保留タイプ"];
-      const type = types[(a.length + b.length + c.length + (retry ? 3 : 0)) % types.length];
-
-      if (selectedMode === "格言として読む") {
-        return {
-          type,
-          sign: `「${a}」「${b}」「${c}」には、答えを急ぐより、今見えているものを確かめたい感覚があります。`,
-          tuning: "今日は決める数を減らし、目の前の選択を一つだけ扱う日です。",
-          proposals: [
-            { label: "減らすこと", text: "今日決めなくていいことを一つ保留にする。" },
-            { label: "見ること", text: `「${b}」から連想する景色を一度だけ眺める。` },
-            { label: "避けること", text: "全部の意味を今日中に説明しようとしない。" }
-          ],
-          oneLine: "空白に見える場所にも、今の答えは映る。",
-          reading: `${a}は印象、${b}は目の前のサイン、${c}は進むか止まるかの合図として読めます。急がない判断が助けになります。`,
-          cardTitle: "今日の格言",
-          cardMain: "空白に見える場所にも、今の答えは映る。",
-          cardSub: `${a}・${b}・${c}`
-        };
-      }
-
-      if (selectedMode === "処方箋風に出す") {
-        return {
-          type,
-          sign: `「${a}」「${b}」「${c}」からは、外へ向かう力と休ませたい感覚が同時に見えます。`,
-          tuning: "予定を詰めるより、回復の場所を先に確保する日です。",
-          proposals: [
-            { label: "処方", text: "予定を一つ軽くする。" },
-            { label: "用法", text: "帰り道に10分だけ寄り道する。" },
-            { label: "避けたいこと", text: "気分の理由を深掘りしすぎない。" }
-          ],
-          oneLine: "逃げ場は、弱さではなく回復の場所。",
-          reading: `${a}、${b}、${c}は、今日の負荷を下げる合図として扱えます。回復を後回しにしない方が動きやすくなります。`,
-          cardTitle: "今日の処方箋",
-          cardMain: "予定を一つ軽くする。",
-          cardSub: "回復場所を先に確保する日。"
-        };
-      }
-
-      return {
-        type,
-        sign: `「${a}」「${b}」「${c}」には、頭の中を整理したい気持ちと、いったん距離を置きたい感覚が混ざっています。`,
-        tuning: "今日は解決より先に、手元の負荷を一段下げると動きやすくなります。",
-        proposals: [
-          { label: "減らすこと", text: "今日中に終えなくていい用事を一つ外す。" },
-          { label: "入れること", text: `${b}から連想する場所で5分休む。` },
-          { label: "避けること", text: "返事や判断を急ぎすぎない。" }
-        ],
-        oneLine: "急がない選択が、今日の自分を助ける。",
-        reading: `${a}は感情、${b}は環境、${c}は身体のサインとして読めます。今日の鍵は、考える量を増やさず行動を絞ることです。`,
-        cardTitle: type,
-        cardMain: "回復場所を先に確保したい日。",
-        cardSub: `${a}・${b}・${c}`
-      };
-    }
-
-    function setResult(words, result, options = {}) {
-      const { saveHistory = true } = options;
-      const joined = words.join("・");
-
-      const proposals = Array.isArray(result.proposals) ? result.proposals.slice(0, 3) : [];
-
-      document.getElementById("todayWords").textContent = joined;
-      document.getElementById("modeChip").textContent = selectedMode;
-      document.getElementById("type").textContent = result.type || "保留タイプ";
-      document.getElementById("sign").textContent = result.sign || "";
-      document.getElementById("tuning").textContent = result.tuning || "";
-      document.getElementById("oneLine").textContent = result.oneLine || "";
-      document.getElementById("reading").textContent = result.reading || "";
-
-      for (let i = 0; i < 3; i++) {
-        document.getElementById(`proposalLabel${i + 1}`).textContent = proposals[i]?.label ? proposals[i].label + "：" : "";
-        document.getElementById(`proposalText${i + 1}`).textContent = proposals[i]?.text || "";
-      }
-
-      document.getElementById("cardWords").textContent = joined;
-      document.getElementById("cardTitle").textContent = result.cardTitle || result.type || "今日の余白タイプ";
-      document.getElementById("cardMain").textContent = result.cardMain || result.oneLine || "";
-      document.getElementById("cardSub").textContent = result.cardSub || "3語で整える";
-
-      currentResult = { words, mode: selectedMode, ...result, createdAt: new Date().toISOString() };
-
-      if (saveHistory) {
-        saveToHistory(currentResult);
-        renderHistory();
-      }
-    }
-
-    async function generate(retry = false) {
-      const words = getWords();
-      if (words.some(w => !w)) {
-        showToast("3つの言葉を入力してください");
-        return;
-      }
-
-      const btn = document.getElementById("generateBtn");
-      const loading = document.getElementById("loading");
-      btn.disabled = true;
-      loading.style.display = "block";
-
-      const fallback = fallbackResult(words, retry);
-      setResult(words, fallback, { saveHistory: false });
-
-      try {
-        const response = await fetch("/.netlify/functions/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ words, mood: selectedMode, mode: selectedMode, retry })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) throw new Error(data.error || "生成に失敗しました");
-
-        setResult(words, data, { saveHistory: true });
-        showToast("AIで診断しました");
-      } catch (error) {
-        console.error(error);
-        setResult(words, fallback, { saveHistory: true });
-        showToast("AI生成に失敗したため、仮結果を表示しました");
-      } finally {
-        loading.style.display = "none";
-        btn.disabled = false;
-        document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-
     function fillRandom() {
-      const words = pick(randomSets);
+      const words = [
+        pick(randomPool.color),
+        pick(randomPool.object),
+        pick(randomPool.scene)
+      ];
       setWords(words);
-      generate(false);
+      showToast("ランダム3語を入れました");
     }
 
     function clearInputs() {
@@ -481,32 +739,138 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
+    function getLength() {
+      const value = Number(document.getElementById("lengthInput").value || 800);
+      return Math.max(100, Math.min(3000, value));
+    }
+
+    function fallbackResult(words) {
+      const [a, b, c] = words;
+      return {
+        title: `${a}・${b}・${c}から始める文章`,
+        angle: `「${a}」を印象、「${b}」を中心、「${c}」を場面としてつなげる切り口です。`,
+        draft: `「${a}」「${b}」「${c}」。この3つの言葉を並べると、まだ文章になる前の景色が見えてきます。\n\n${b}はただそこにあるものではなく、${a}という印象をまとって、${c}の時間の中に置かれています。ここから先は、日記にも、物語にも、短い投稿にもできます。\n\n大事なのは、この3語を正しく説明することではなく、自分では選ばなかった角度から文章を始めてみることです。`,
+        hint: "完成品として使うより、この中の一文や切り口を拾って、自分の文章に育てるのがおすすめです。",
+        altIdeas: [
+          `${a}を感情の色として書く`,
+          `${b}を語り手にして書く`,
+          `${c}の途中で起きた小さな出来事にする`
+        ],
+        cardTitle: "3語で整える",
+        cardMain: `${a}・${b}・${c}から文章の入口を作る。`,
+        cardSub: "完成品ではなく、使える途中。"
+      };
+    }
+
+    function setResult(words, result, options = {}) {
+      const { saveHistory = true } = options;
+      const joined = words.join("・");
+
+      document.getElementById("todayWords").textContent = joined;
+      document.getElementById("genreChip").textContent = selectedGenre;
+      document.getElementById("title").textContent = result.title || "";
+      document.getElementById("angle").textContent = result.angle || "";
+      document.getElementById("draft").textContent = result.draft || "";
+      document.getElementById("hintText").textContent = result.hint || "";
+
+      const altRoot = document.getElementById("altIdeas");
+      const alts = Array.isArray(result.altIdeas) ? result.altIdeas : [];
+      altRoot.innerHTML = alts.map(x => `<div class="alt-item">${escapeHtml(x)}</div>`).join("");
+
+      document.getElementById("cardWords").textContent = joined;
+      document.getElementById("cardTitle").textContent = result.cardTitle || result.title || "3語で整える";
+      document.getElementById("cardMain").textContent = result.cardMain || result.angle || "";
+      document.getElementById("cardSub").textContent = result.cardSub || "3語で整える";
+
+      currentResult = {
+        words,
+        genre: selectedGenre,
+        viewpoint: document.getElementById("viewpoint").value,
+        length: getLength(),
+        ...result,
+        createdAt: new Date().toISOString()
+      };
+
+      if (saveHistory) {
+        saveToHistory(currentResult);
+        renderHistory();
+      }
+    }
+
+    async function generate(retry = false) {
+      const words = getWords();
+
+      if (words.some(w => !w)) {
+        showToast("3つの言葉を入力してください");
+        return;
+      }
+
+      const btn = document.getElementById("generateBtn");
+      const loading = document.getElementById("loading");
+      btn.disabled = true;
+      loading.style.display = "block";
+
+      const fallback = fallbackResult(words);
+      setResult(words, fallback, { saveHistory: false });
+
+      try {
+        const response = await fetch("/.netlify/functions/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            words,
+            genre: selectedGenre,
+            viewpoint: document.getElementById("viewpoint").value,
+            length: getLength(),
+            retry
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "生成に失敗しました");
+        }
+
+        setResult(words, data, { saveHistory: true });
+        showToast("AIで作成しました");
+      } catch (error) {
+        console.error(error);
+        setResult(words, fallback, { saveHistory: true });
+        showToast("AI生成に失敗したため、仮結果を表示しました");
+      } finally {
+        loading.style.display = "none";
+        btn.disabled = false;
+        document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
     function currentText() {
-      const proposals = currentResult?.proposals || [];
+      const r = currentResult || {};
       return [
-        "今日の3語：",
-        document.getElementById("todayWords").textContent,
+        "3語：",
+        (r.words || getWords()).join("・"),
         "",
-        "結果の出し方：",
-        selectedMode,
+        "文章タイプ：",
+        r.genre || selectedGenre,
         "",
-        "今日の余白タイプ：",
-        document.getElementById("type").textContent,
+        "視点：",
+        r.viewpoint || document.getElementById("viewpoint").value,
         "",
-        "今のサイン：",
-        document.getElementById("sign").textContent,
+        "タイトル案：",
+        r.title || "",
         "",
-        "今日の整え方：",
-        document.getElementById("tuning").textContent,
+        "今回の切り口：",
+        r.angle || "",
         "",
-        "3つの提案：",
-        proposals.map((p, i) => `${i + 1}. ${p.label}：${p.text}`).join("\n"),
+        "たたき台：",
+        r.draft || "",
         "",
-        "今日の一言：",
-        document.getElementById("oneLine").textContent,
+        "発想メモ：",
+        r.hint || "",
         "",
-        "読み解き：",
-        document.getElementById("reading").textContent
+        "別の切り口：",
+        (r.altIdeas || []).map((x, i) => `${i + 1}. ${x}`).join("\n")
       ].join("\n");
     }
 
@@ -521,6 +885,7 @@
       const canvas = document.createElement("canvas");
       canvas.width = Math.round(rect.width * scale);
       canvas.height = Math.round(rect.height * scale);
+
       const ctx = canvas.getContext("2d");
       ctx.scale(scale, scale);
 
@@ -551,17 +916,14 @@
       grad.addColorStop(0, "#2f2923");
       grad.addColorStop(.58, "#46392f");
       grad.addColorStop(1, "#2b2621");
+
       roundRect(0, 0, w, h, radius);
       ctx.fillStyle = grad;
       ctx.fill();
 
-      ctx.fillStyle = "rgba(255,255,255,.06)";
-      ctx.beginPath();
-      ctx.arc(18, h - 24, 76, 0, Math.PI * 2);
-      ctx.fill();
-
       const x = 22;
       let y = 28;
+
       ctx.fillStyle = "#d9cbb9";
       ctx.font = "12px sans-serif";
       ctx.fillText("SNS保存カード", x, y);
@@ -594,16 +956,19 @@
       wrapText(ctx, sub, x, y, w - 44, 31);
 
       const link = document.createElement("a");
-      link.download = "3go-de-totonou-card-v2.png";
+      link.download = "3go-de-totonou-card.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
+
       showToast("カード画像を保存しました");
     }
 
     function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
       let line = "";
+
       for (let i = 0; i < text.length; i++) {
         const testLine = line + text[i];
+
         if (ctx.measureText(testLine).width > maxWidth && line.length > 0) {
           ctx.fillText(line, x, y);
           line = text[i];
@@ -612,24 +977,27 @@
           line = testLine;
         }
       }
+
       ctx.fillText(line, x, y);
       return y + lineHeight;
     }
 
     function saveToHistory(item) {
       const history = getHistory();
-      const signature = `${item.words.join("・")}__${item.mode || ""}`;
-      const filtered = history.filter((old) => {
-        const oldSignature = `${(old.words || []).join("・")}__${old.mode || ""}`;
+      const signature = `${item.words.join("・")}__${item.genre}__${item.viewpoint}__${item.length}`;
+
+      const filtered = history.filter(old => {
+        const oldSignature = `${(old.words || []).join("・")}__${old.genre}__${old.viewpoint}__${old.length}`;
         return oldSignature !== signature;
       });
-      const next = [item, ...filtered].slice(0, 8);
-      localStorage.setItem("threeWordsHistoryV2", JSON.stringify(next));
+
+      const next = [item, ...filtered].slice(0, 10);
+      localStorage.setItem("threeWordsWritingHistory", JSON.stringify(next));
     }
 
     function getHistory() {
       try {
-        return JSON.parse(localStorage.getItem("threeWordsHistoryV2") || "[]");
+        return JSON.parse(localStorage.getItem("threeWordsWritingHistory") || "[]");
       } catch {
         return [];
       }
@@ -638,6 +1006,7 @@
     function renderHistory() {
       const root = document.getElementById("history");
       const history = getHistory();
+
       if (!history.length) {
         root.innerHTML = '<div class="empty">まだ履歴はありません。</div>';
         return;
@@ -645,26 +1014,32 @@
 
       root.innerHTML = history.map((item, index) => `
         <div class="history-item" onclick="loadHistory(${index})">
-          <b>${item.words.join("・")}｜${item.type || "余白タイプ"}</b>
-          <span>${item.mode || ""}｜${item.oneLine || ""}</span>
+          <b>${escapeHtml((item.words || []).join("・"))}｜${escapeHtml(item.genre || "")}</b>
+          <span>${escapeHtml(item.title || "")}</span>
         </div>
       `).join("");
     }
 
     function loadHistory(index) {
       const item = getHistory()[index];
+
       if (!item) return;
-      setWords(item.words);
-      selectedMode = item.mode || "診断として見る";
-      document.querySelectorAll(".mode").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.mode === selectedMode);
+
+      setWords(item.words || ["", "", ""]);
+      selectedGenre = item.genre || "随筆";
+      document.querySelectorAll("[data-genre]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.genre === selectedGenre);
       });
+
+      document.getElementById("viewpoint").value = item.viewpoint || "おまかせ";
+      document.getElementById("lengthInput").value = item.length || 800;
+
       setResult(item.words, item, { saveHistory: false });
       document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function clearHistory() {
-      localStorage.removeItem("threeWordsHistoryV2");
+      localStorage.removeItem("threeWordsWritingHistory");
       renderHistory();
       showToast("履歴を削除しました");
     }
@@ -676,7 +1051,21 @@
       setTimeout(() => toast.style.display = "none", 1500);
     }
 
-    setResult(["白い", "看板", "信号"], fallbackResult(["白い", "看板", "信号"], false), { saveHistory: false });
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    setResult(
+      ["黄色い", "花", "散歩"],
+      fallbackResult(["黄色い", "花", "散歩"]),
+      { saveHistory: false }
+    );
+
     renderHistory();
   </script>
 </body>
