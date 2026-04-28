@@ -1,0 +1,14 @@
+{
+  "name": "3go-de-totonou-netlify",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}

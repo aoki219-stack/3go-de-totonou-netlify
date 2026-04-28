@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3語で整える</title>
+  <style>
+    :root {
+      --bg: #fbf6d8;
+      --paper: #fffef2;
+      --card: rgba(255, 254, 244, .94);
+      --ink: #2d2924;
+      --sub: #6f665c;
+      --thin: #eadfba;
+      --soft: #f7efc8;
+      --deep: #3d342c;
+      --deep2: #51463d;
+      --gold: #b38a55;
+      --green: #6f7d65;
+      --danger: #9b4d3f;
+      --shadow: 0 28px 70px rgba(50, 42, 33, .18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(255,255,255,.94), transparent 34%),
+        radial-gradient(circle at 90% 8%, rgba(243,220,120,.26), transparent 30%),
+        linear-gradient(180deg, #fffdf0 0%, var(--bg) 58%, #f7efbf 100%);
+      line-height: 1.85;
+    }
+
+    .phone {
+      width: min(440px, 100%);
+      margin: 0 auto;
+      padding: 22px 16px 48px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(232,220,205,.9);
+      border-radius: 34px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.86), rgba(255,252,233,.80)),
+        radial-gradient(circle at bottom right, rgba(232,200,83,.14), transparent 40%);
+      box-shadow: var(--shadow);
+      padding: 28px 22px 26px;
+      text-align: center;
+    }
+
+    .hero:before {
+      content: "";
+      position: absolute;
+      top: -60px;
+      right: -45px;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: rgba(232,200,83,.14);
+      filter: blur(1px);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 13px;
+      border: 1px solid var(--thin);
+      border-radius: 999px;
+      background: rgba(255,255,255,.8);
+      font-size: 12px;
+      color: var(--sub);
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 17px 0 7px;
+      font-size: 35px;
+      letter-spacing: .04em;
+      line-height: 1.25;
+    }
+
+    .tagline {
+      margin: 0;
+      font-size: 14px;
+      color: var(--deep2);
+      font-weight: 650;
+    }
+
+    .lead {
+      margin: 18px auto 0;
+      font-size: 14px;
+      color: var(--sub);
+      max-width: 330px;
+    }
+
+    .panel {
+      margin-top: 18px;
+      padding: 20px;
+      border: 1px solid var(--thin);
+      border-radius: 30px;
+      background: var(--card);
+      box-shadow: 0 24px 52px rgba(71, 57, 38, .18), 0 10px 24px rgba(71, 57, 38, .10);
+      backdrop-filter: blur(10px);
+      transition: box-shadow .2s ease, transform .2s ease;
+    }
+
+    .panel:hover { transform: translateY(-2px); }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 13px;
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: .03em;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--sub);
+      white-space: nowrap;
+    }
+
+    .inputs {
+      display: grid;
+      gap: 10px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap span {
+      position: absolute;
+      top: 50%;
+      left: 14px;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--thin);
+      border-radius: 20px;
+      background: rgba(255,255,255,.72);
+      padding: 13px 15px 13px 42px;
+      font-size: 16px;
+      color: var(--ink);
+      outline: none;
+      transition: .18s;
+      font-family: inherit;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #c9aa7d;
+      box-shadow: 0 0 0 4px rgba(179,138,85,.14);
+      background: white;
+    }
+
+    .mood-area { margin-top: 18px; }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .mood {
+      border: 1px solid var(--thin);
+      background: rgba(255,255,255,.74);
+      border-radius: 19px;
+      padding: 12px;
+      min-height: 82px;
+      text-align: left;
+      cursor: pointer;
+      transition: .18s;
+      color: var(--ink);
+    }
+
+    .mood b {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .mood span {
+      display: block;
+      font-size: 11px;
+      color: var(--sub);
+      line-height: 1.55;
+    }
+
+    .mood.active {
+      background: var(--deep);
+      border-color: var(--deep);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(61,52,44,.18);
+    }
+
+    .mood.active span { color: #e9dfd4; }
+
+    .row-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 13px;
+    }
+
+    .main-btn {
+      width: 100%;
+      margin-top: 18px;
+      border: none;
+      border-radius: 22px;
+      padding: 15px 18px;
+      background: linear-gradient(135deg, var(--deep), #5b4b3e);
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 18px 34px rgba(61,52,44,.26);
+      transition: transform .18s ease, opacity .18s ease;
+    }
+
+    .main-btn:active { transform: translateY(1px); }
+    .main-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    .sub-btn {
+      border: 1px solid var(--thin);
+      border-radius: 20px;
+      padding: 12px 8px;
+      background: rgba(255,255,255,.7);
+      color: var(--ink);
+      font-weight: 750;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(71,57,38,.10);
+      transition: box-shadow .2s ease, transform .2s ease;
+      font-size: 13px;
+    }
+
+    .sub-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 24px rgba(71,57,38,.14);
+    }
+
+    .sub-btn.danger { color: var(--danger); }
+
+    .loading {
+      display: none;
+      text-align: center;
+      color: var(--sub);
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .dots:after {
+      content: "";
+      animation: dots 1.2s infinite;
+    }
+
+    @keyframes dots {
+      0% { content: ""; }
+      33% { content: "。"; }
+      66% { content: "。。"; }
+      100% { content: "。。。"; }
+    }
+
+    .result {
+      display: block;
+      scroll-margin-top: 18px;
+    }
+
+    .words-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .small-label {
+      display: block;
+      color: var(--sub);
+      font-size: 12px;
+      line-height: 1.3;
+      margin-bottom: 5px;
+    }
+
+    .words {
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: var(--soft);
+      color: #6a5f54;
+      padding: 6px 10px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .theme {
+      border-radius: 26px;
+      padding: 18px;
+      background:
+        linear-gradient(135deg, rgba(247,239,200,1), rgba(255,250,226,1));
+      border: 1px solid rgba(232,220,205,.7);
+      box-shadow: 0 16px 30px rgba(120, 98, 58, .14), 0 6px 14px rgba(120, 98, 58, .07);
+    }
+
+    .theme h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.5;
+    }
+
+    .section { margin-top: 18px; }
+
+    .section h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      letter-spacing: .03em;
+    }
+
+    .body-text {
+      margin: 0;
+      font-size: 14px;
+      color: #4f473f;
+      line-height: 1.95;
+      white-space: pre-line;
+    }
+
+    .diary {
+      margin-top: 18px;
+      border: 1px solid var(--thin);
+      border-radius: 26px;
+      background: rgba(255,255,255,.78);
+      padding: 16px;
+      box-shadow: 0 16px 30px rgba(120, 98, 58, .13), 0 6px 14px rgba(120, 98, 58, .06);
+    }
+
+    .diary-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .diary-title h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .diary-line {
+      padding: 11px 0;
+      border-top: 1px solid rgba(232,220,205,.85);
+      font-size: 14px;
+      color: #4f473f;
+      line-height: 1.8;
+    }
+
+    .diary-line:first-of-type { border-top: none; }
+
+    .diary-line b {
+      color: var(--deep);
+      margin-right: 4px;
+    }
+
+    .phrase {
+      margin-top: 18px;
+      text-align: center;
+      padding: 18px 10px 4px;
+    }
+
+    .phrase strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1.65;
+      letter-spacing: .02em;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 17px;
+    }
+
+    .save-card {
+      position: relative;
+      overflow: hidden;
+      margin-top: 18px;
+      border-radius: 30px;
+      padding: 24px 22px;
+      background:
+        radial-gradient(circle at 90% 5%, rgba(179,138,85,.30), transparent 33%),
+        linear-gradient(160deg, #2f2923 0%, #46392f 58%, #2b2621 100%);
+      color: white;
+      box-shadow: 0 34px 70px rgba(47,41,35,.30), 0 14px 30px rgba(47,41,35,.14);
+      transition: box-shadow .2s ease, transform .2s ease;
+    }
+
+    .save-card:hover { transform: translateY(-2px); }
+
+    .save-card:after {
+      content: "";
+      position: absolute;
+      left: -38px;
+      bottom: -54px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.06);
+    }
+
+    .save-card .small-label { color: #d9cbb9; }
+
+    .save-card .words {
+      color: #f7efe6;
+      font-size: 14px;
+      letter-spacing: .04em;
+    }
+
+    .save-card h2 {
+      margin: 16px 0 10px;
+      font-size: 25px;
+      line-height: 1.48;
+    }
+
+    .save-card p {
+      margin: 0;
+      color: #eadfd2;
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .save-card .line {
+      margin-top: 19px;
+      padding-top: 17px;
+      border-top: 1px solid rgba(255,255,255,.18);
+      color: #fff;
+      font-weight: 800;
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .history-item {
+      border: 1px solid var(--thin);
+      border-radius: 20px;
+      padding: 12px;
+      background: rgba(255,255,255,.62);
+      cursor: pointer;
+      transition: .18s;
+    }
+
+    .history-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(71,57,38,.08);
+    }
+
+    .history-item b {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .history-item span {
+      display: block;
+      font-size: 12px;
+      color: var(--sub);
+      line-height: 1.55;
+    }
+
+    .empty {
+      color: var(--sub);
+      font-size: 13px;
+      text-align: center;
+      padding: 10px 0 2px;
+    }
+
+    .notice {
+      margin: 18px 10px 0;
+      text-align: center;
+      color: var(--sub);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .toast {
+      display: none;
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      background: rgba(45,41,36,.94);
+      color: white;
+      border-radius: 999px;
+      padding: 10px 15px;
+      font-size: 13px;
+      box-shadow: 0 12px 32px rgba(0,0,0,.18);
+      z-index: 5;
+    }
+
+    @media (max-width: 360px) {
+      h1 { font-size: 30px; }
+      .mood-grid { grid-template-columns: 1fr; }
+      .actions, .row-buttons { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <section class="hero">
+      <div class="badge">✨ ことばで今日を整える</div>
+      <h1>3語で整える</h1>
+      <p class="tagline">ふと選んだ3語から、今日の気づきへ。</p>
+      <p class="lead">
+        今、頭に浮かんだもの。<br>
+        ふと目に留まったもの。<br>
+        なぜか気になった言葉。
+      </p>
+      <p class="lead">
+        深く考えずに、3つだけ入力してください。<br>
+        その3語から、今日の小さな気づきと<br>
+        感謝・改善・目標の3行日記を作ります。
+      </p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <p class="title">3つの言葉を入れる</p>
+        <span class="hint">例：白い・看板・信号</span>
+      </div>
+
+      <div class="inputs">
+        <label class="input-wrap">
+          <span>01</span>
+          <input id="word1" value="白い" placeholder="例：雨">
+        </label>
+        <label class="input-wrap">
+          <span>02</span>
+          <input id="word2" value="看板" placeholder="例：コンビニ">
+        </label>
+        <label class="input-wrap">
+          <span>03</span>
+          <input id="word3" value="信号" placeholder="例：ため息">
+        </label>
+      </div>
+
+      <div class="row-buttons">
+        <button class="sub-btn" onclick="fillRandom()">ランダム3語</button>
+        <button class="sub-btn" onclick="clearInputs()">入力を消す</button>
+      </div>
+
+      <div class="mood-area">
+        <p class="title">雰囲気を選ぶ</p>
+        <div class="mood-grid">
+          <button class="mood active" data-mood="静かに整える">
+            <b>静かに</b>
+            <span>落ち着いた言葉で振り返る</span>
+          </button>
+          <button class="mood" data-mood="前向きに整える">
+            <b>前向きに</b>
+            <span>明日につながる視点を作る</span>
+          </button>
+          <button class="mood" data-mood="学びとして整える">
+            <b>学びとして</b>
+            <span>心理学っぽいヒントを入れる</span>
+          </button>
+          <button class="mood" data-mood="少し不思議に整える">
+            <b>少し不思議に</b>
+            <span>偶然の言葉を物語のように</span>
+          </button>
+        </div>
+      </div>
+
+      <button id="generateBtn" class="main-btn" onclick="generate()">今日の気づきを作る</button>
+      <div id="loading" class="loading dots">3つの言葉から、今日の気づきを整えています</div>
+    </section>
+
+    <section id="result" class="result">
+      <section class="panel">
+        <div class="words-row">
+          <div>
+            <span class="small-label">今日の3語</span>
+            <div id="todayWords" class="words">白い・看板・信号</div>
+          </div>
+          <span id="moodChip" class="chip">静かに整える</span>
+        </div>
+
+        <div class="theme">
+          <span class="small-label">見えてきたテーマ</span>
+          <h2 id="theme">立ち止まった時に見えるサイン</h2>
+        </div>
+
+        <div class="section">
+          <h3>今日のなるほど</h3>
+          <p id="insight" class="body-text">
+            人は動き続けているときほど、目の前にある小さな変化を見落としやすいものです。ふと目に入ったものや、なぜか気になった言葉には、今の自分を少し整えるヒントが隠れていることがあります。止まることは、遅れることではなく、見直すための余白になるのかもしれません。
+          </p>
+        </div>
+
+        <div class="diary">
+          <div class="diary-title">
+            <h3>3行日記</h3>
+            <span class="chip">感謝・改善・目標</span>
+          </div>
+          <div class="diary-line"><b>感謝：</b><span id="thanks">今日、何気なく目に入ったものに気づけたことを大切にする。</span></div>
+          <div class="diary-line"><b>改善：</b><span id="improve">急いでいると周りを見る余裕がなくなる。明日は一度だけ、意識して立ち止まってみる。</span></div>
+          <div class="diary-line"><b>目標：</b><span id="goal">明日は移動中にスマホを見続けず、目に入った景色をひとつ覚えておく。</span></div>
+        </div>
+
+        <div class="phrase">
+          <span class="small-label">今日の一言</span>
+          <strong id="phrase">止まった時にしか、読めないサインがある。</strong>
+        </div>
+
+        <div class="actions">
+          <button class="sub-btn" onclick="copyText()">コピーする</button>
+          <button class="sub-btn" onclick="generate(true)">もう一度作る</button>
+          <button class="sub-btn" onclick="saveCardAsImage()">カードを画像保存</button>
+          <button class="sub-btn" onclick="resetWords()">別の3語</button>
+        </div>
+      </section>
+
+      <section id="saveCard" class="save-card">
+        <span class="small-label">SNS保存カード</span>
+        <div id="cardWords" class="words">白い・看板・信号</div>
+        <h2 id="cardTheme">立ち止まった時に見えるサイン</h2>
+        <p id="cardInsight">人は動き続けているときほど、目の前にある小さな変化を見落としやすいものです。</p>
+        <div id="cardPhrase" class="line">止まった時にしか、読めないサインがある。</div>
+      </section>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <p class="title">履歴</p>
+        <button class="sub-btn danger" style="width:auto; padding:8px 12px;" onclick="clearHistory()">削除</button>
+      </div>
+      <div id="history" class="history-list"></div>
+    </section>
+
+    <p class="notice">
+      これは占いではなく、言葉をきっかけに今日を少し振り返るためのメモです。<br>
+      性格や未来を断定するものではありません。
+    </p>
+  </main>
+
+  <div id="toast" class="toast">コピーしました</div>
+
+  <script>
+    let selectedMood = "静かに整える";
+    let currentResult = null;
+
+    const randomSets = [
+      ["雨", "コンビニ", "ため息"],
+      ["白い", "看板", "信号"],
+      ["スマホ", "夜", "通知"],
+      ["コーヒー", "朝", "沈黙"],
+      ["靴", "駅", "背中"],
+      ["窓", "風", "記憶"],
+      ["財布", "レシート", "帰り道"],
+      ["桜", "ベンチ", "約束"],
+      ["鍵", "玄関", "月曜日"],
+      ["カーテン", "光", "深呼吸"]
+    ];
+
+    const themeSeeds = [
+      {
+        keys: /雨|コンビニ|ため息/,
+        theme: "小さな避難場所",
+        insight: "疲れているとき、人は大きな解決策よりも、すぐ近くにある安心に助けられることがあります。雨の日のコンビニの明かりや、温かい飲み物のような小さなものが、心の緊張を少しほどいてくれる。ため息も、弱さではなく、体が力を抜こうとしているサインかもしれません。",
+        thanks: "雨の中でも、少し安心できる場所や明かりがあった。",
+        improve: "ため息が増えていたなら、今日は少し予定を詰めすぎていたのかもしれない。",
+        goal: "明日は温かい飲み物を買って、10分だけ何もしない時間を作る。",
+        phrase: "避難場所がある人は、また歩き出せる。"
+      },
+      {
+        keys: /スマホ|夜|通知/,
+        theme: "心のスイッチを切る時間",
+        insight: "夜の通知は、ほんの小さな光や音でも、心を現実に引き戻します。便利なつながりも、休む時間には少し距離が必要です。情報を増やすより、入ってくる量を減らすことで、頭の中が静かになることがあります。",
+        thanks: "今日も必要な連絡を受け取ることができた。",
+        improve: "夜まで通知を見続けて、気持ちが休まりにくかった。",
+        goal: "明日の夜は、寝る30分前にスマホを置いてみる。",
+        phrase: "休むには、つながらない勇気もいる。"
+      },
+      {
+        keys: /コーヒー|朝|沈黙/,
+        theme: "静かな始まりを取り戻す",
+        insight: "朝のコーヒーや短い沈黙には、一日の速度を自分で決め直す力があります。忙しさに押し出されるように始める日よりも、ほんの数分でも呼吸を整えて始める日の方が、心の余白は残りやすいものです。",
+        thanks: "朝に少しだけ、自分のための時間を持てた。",
+        improve: "起きてすぐ予定に追われていた。明日は最初の5分だけ静かに過ごす。",
+        goal: "明日はコーヒーを飲む間だけ、スマホを見ないで過ごす。",
+        phrase: "一日は、最初の沈黙で少し変わる。"
+      },
+      {
+        keys: /靴|駅|背中/,
+        theme: "進む人の後ろ姿",
+        insight: "駅や靴や背中には、前へ進む気配があります。誰かの背中を見ると、自分だけが立ち止まっているように感じることもありますが、人にはそれぞれの歩幅があります。比べるより、自分の足元を一度見ることが、次の一歩を整える近道になることがあります。",
+        thanks: "今日も自分の足でここまで来られた。",
+        improve: "人の進み方と自分を比べすぎていたかもしれない。",
+        goal: "明日は小さくても、自分の歩幅で一つだけ進める。",
+        phrase: "人の背中より、自分の足元を見る日があっていい。"
+      },
+      {
+        keys: /窓|風|記憶/,
+        theme: "心に風を通す",
+        insight: "窓を開けると、部屋の空気だけでなく、気持ちの向きも少し変わることがあります。記憶は閉じ込めるほど重く感じることがありますが、少し距離を置いて眺めると、今の自分を支える経験として見え直すこともあります。",
+        thanks: "昔の記憶が、今の自分を形づくっていることに気づけた。",
+        improve: "考えを抱え込みすぎていた。明日は少し外の空気を入れる。",
+        goal: "明日は窓を開けて、深呼吸を一回だけ丁寧にする。",
+        phrase: "心にも、ときどき風を通す。"
+      }
+    ];
+
+    const endings = {
+      "静かに整える": [
+        "少し立ち止まるだけで、見え方は変わります。",
+        "無理に答えを出さなくても、整う時間はあります。"
+      ],
+      "前向きに整える": [
+        "今日の小さな気づきは、明日の一歩になります。",
+        "完璧でなくても、少し進めば十分です。"
+      ],
+      "学びとして整える": [
+        "気づきを言葉にすると、感情との距離が少し取れます。",
+        "小さな行動に置き換えることで、心は整いやすくなります。"
+      ],
+      "少し不思議に整える": [
+        "偶然選んだ言葉が、今の景色をそっと照らすことがあります。",
+        "意味は後から、静かについてくることがあります。"
+      ]
+    };
+
+    document.querySelectorAll(".mood").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".mood").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedMood = btn.dataset.mood;
+        document.getElementById("moodChip").textContent = selectedMood;
+      });
+    });
+
+    function getWords() {
+      return [
+        document.getElementById("word1").value.trim(),
+        document.getElementById("word2").value.trim(),
+        document.getElementById("word3").value.trim()
+      ];
+    }
+
+    function setWords(words) {
+      document.getElementById("word1").value = words[0] || "";
+      document.getElementById("word2").value = words[1] || "";
+      document.getElementById("word3").value = words[2] || "";
+    }
+
+    function pick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function chooseBase(words) {
+      const joined = words.join(" ");
+      return themeSeeds.find(s => s.keys.test(joined)) || null;
+    }
+
+    function makeGeneric(words, retry = false) {
+      const [a, b, c] = words;
+      const themeChoices = [
+        `${a}から始まる小さな気づき`,
+        `${b}の前で立ち止まる`,
+        `${c}に隠れた今日の余白`,
+        `何気ない3語が教えるもの`
+      ];
+
+      const phraseChoices = [
+        `${a}も${b}も${c}も、今を整える小さな入口になる。`,
+        `気になった言葉には、今の自分が少し映る。`,
+        `何気ないものほど、心の状態をそっと教えてくれる。`,
+        `今日の余白は、もう目の前にあったのかもしれない。`
+      ];
+
+      let moodAdd = pick(endings[selectedMood] || endings["静かに整える"]);
+      let insight = `「${a}」「${b}」「${c}」という3つの言葉には、日常の中でふと立ち止まる感覚があります。人は忙しいときほど、目の前のものを見ているようで見落としがちです。けれど、なぜか気になった言葉を拾い上げると、今の自分が求めている安心や方向性に気づくことがあります。${moodAdd}`;
+
+      if (retry) {
+        insight = `同じ3語でも、少し見方を変えると印象は変わります。「${a}」は目に入ったもの、「${b}」は今いる場所や状況、「${c}」は心の反応として読むこともできます。言葉を並べて眺めるだけで、頭の中の散らかりが少し整理されることがあります。${moodAdd}`;
+      }
+
+      return {
+        theme: retry ? pick(themeChoices.slice().reverse()) : pick(themeChoices),
+        insight,
+        thanks: `今日、「${a}」や「${b}」のような何気ないものに気づけた。`,
+        improve: `「${c}」が気になったのは、少し心が反応していたからかもしれない。明日はその感覚を無視しすぎない。`,
+        goal: `明日は、目に入ったものをひとつだけ言葉にして残してみる。`,
+        phrase: retry ? pick(phraseChoices.slice().reverse()) : pick(phraseChoices)
+      };
+    }
+
+    function buildResult(words, retry = false) {
+      const base = chooseBase(words);
+      let result = base ? {...base} : makeGeneric(words, retry);
+
+      if (retry && base) {
+        result = {
+          ...result,
+          insight: result.insight + " 同じ言葉でも、見方を少し変えるだけで、今日の意味は別の角度から見えてきます。",
+          phrase: "同じ景色でも、読み方は一つではない。"
+        };
+      }
+
+      return result;
+    }
+
+    function setResult(words, result) {
+      const joined = words.join("・");
+      document.getElementById("todayWords").textContent = joined;
+      document.getElementById("moodChip").textContent = selectedMood;
+      document.getElementById("theme").textContent = result.theme;
+      document.getElementById("insight").textContent = result.insight;
+      document.getElementById("thanks").textContent = result.thanks;
+      document.getElementById("improve").textContent = result.improve;
+      document.getElementById("goal").textContent = result.goal;
+      document.getElementById("phrase").textContent = result.phrase;
+
+      document.getElementById("cardWords").textContent = joined;
+      document.getElementById("cardTheme").textContent = result.theme;
+      document.getElementById("cardInsight").textContent = result.insight.split("。")[0] + "。";
+      document.getElementById("cardPhrase").textContent = result.phrase;
+
+      currentResult = { words, mood: selectedMood, ...result, createdAt: new Date().toISOString() };
+      saveToHistory(currentResult);
+      renderHistory();
+    }
+
+    async function generate(retry = false) {
+      const words = getWords();
+      if (words.some(w => !w)) {
+        showToast("3つの言葉を入力してください");
+        return;
+      }
+
+      const btn = document.getElementById("generateBtn");
+      const loading = document.getElementById("loading");
+      btn.disabled = true;
+      loading.style.display = "block";
+
+      try {
+        const response = await fetch("/.netlify/functions/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            words,
+            mood: selectedMood,
+            retry
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "生成に失敗しました");
+        }
+
+        setResult(words, data);
+        document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        console.error(error);
+        showToast(error.message || "生成に失敗しました");
+      } finally {
+        loading.style.display = "none";
+        btn.disabled = false;
+      }
+    }
+
+    function fillRandom() {
+      const words = pick(randomSets);
+      setWords(words);
+      generate(false);
+    }
+
+    function clearInputs() {
+      setWords(["", "", ""]);
+      showToast("入力を消しました");
+    }
+
+    function resetWords() {
+      setWords(["", "", ""]);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function currentText() {
+      return [
+        "今日の3語：",
+        document.getElementById("todayWords").textContent,
+        "",
+        "見えてきたテーマ：",
+        document.getElementById("theme").textContent,
+        "",
+        "今日のなるほど：",
+        document.getElementById("insight").textContent,
+        "",
+        "3行日記：",
+        "感謝：" + document.getElementById("thanks").textContent,
+        "改善：" + document.getElementById("improve").textContent,
+        "目標：" + document.getElementById("goal").textContent,
+        "",
+        "今日の一言：",
+        document.getElementById("phrase").textContent
+      ].join("\n");
+    }
+
+    function copyText() {
+      navigator.clipboard.writeText(currentText()).then(() => showToast("コピーしました"));
+    }
+
+    function saveCardAsImage() {
+      const card = document.getElementById("saveCard");
+      const rect = card.getBoundingClientRect();
+      const scale = 2;
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(rect.width * scale);
+      canvas.height = Math.round(rect.height * scale);
+      const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+
+      const words = document.getElementById("cardWords").textContent;
+      const theme = document.getElementById("cardTheme").textContent;
+      const insight = document.getElementById("cardInsight").textContent;
+      const phrase = document.getElementById("cardPhrase").textContent;
+
+      const w = rect.width;
+      const h = rect.height;
+      const radius = 30;
+
+      function roundRect(x, y, width, height, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + width - r, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+        ctx.lineTo(x + width, y + height - r);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+        ctx.lineTo(x + r, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+      }
+
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, "#2f2923");
+      grad.addColorStop(.58, "#46392f");
+      grad.addColorStop(1, "#2b2621");
+      roundRect(0, 0, w, h, radius);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      ctx.fillStyle = "rgba(255,255,255,.06)";
+      ctx.beginPath();
+      ctx.arc(18, h - 24, 76, 0, Math.PI * 2);
+      ctx.fill();
+
+      const x = 22;
+      let y = 28;
+      ctx.fillStyle = "#d9cbb9";
+      ctx.font = "12px sans-serif";
+      ctx.fillText("SNS保存カード", x, y);
+
+      y += 28;
+      ctx.fillStyle = "#f7efe6";
+      ctx.font = "bold 14px sans-serif";
+      ctx.fillText(words, x, y);
+
+      y += 42;
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 25px sans-serif";
+      y = wrapText(ctx, theme, x, y, w - 44, 37);
+
+      y += 10;
+      ctx.fillStyle = "#eadfd2";
+      ctx.font = "14px sans-serif";
+      y = wrapText(ctx, insight, x, y, w - 44, 27);
+
+      y += 18;
+      ctx.strokeStyle = "rgba(255,255,255,.18)";
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(w - 22, y);
+      ctx.stroke();
+
+      y += 32;
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 18px sans-serif";
+      wrapText(ctx, phrase, x, y, w - 44, 31);
+
+      const link = document.createElement("a");
+      link.download = "3go-de-totonou-card.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      showToast("カード画像を保存しました");
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      let line = "";
+      for (let i = 0; i < text.length; i++) {
+        const testLine = line + text[i];
+        if (ctx.measureText(testLine).width > maxWidth && line.length > 0) {
+          ctx.fillText(line, x, y);
+          line = text[i];
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, x, y);
+      return y + lineHeight;
+    }
+
+    function saveToHistory(item) {
+      const history = getHistory();
+      const next = [item, ...history].slice(0, 5);
+      localStorage.setItem("threeWordsHistory", JSON.stringify(next));
+    }
+
+    function getHistory() {
+      try {
+        return JSON.parse(localStorage.getItem("threeWordsHistory") || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function renderHistory() {
+      const root = document.getElementById("history");
+      const history = getHistory();
+      if (!history.length) {
+        root.innerHTML = '<div class="empty">まだ履歴はありません。</div>';
+        return;
+      }
+
+      root.innerHTML = history.map((item, index) => `
+        <div class="history-item" onclick="loadHistory(${index})">
+          <b>${item.words.join("・")}｜${item.theme}</b>
+          <span>${item.phrase}</span>
+        </div>
+      `).join("");
+    }
+
+    function loadHistory(index) {
+      const item = getHistory()[index];
+      if (!item) return;
+      setWords(item.words);
+      selectedMood = item.mood || "静かに整える";
+      document.querySelectorAll(".mood").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mood === selectedMood);
+      });
+      setResult(item.words, item);
+      document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function clearHistory() {
+      localStorage.removeItem("threeWordsHistory");
+      renderHistory();
+      showToast("履歴を削除しました");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.style.display = "block";
+      setTimeout(() => toast.style.display = "none", 1500);
+    }
+
+    // 初期表示はサンプルを表示します。ボタンを押すとAI生成します。
+    setResult(["白い", "看板", "信号"], buildResult(["白い", "看板", "信号"], false));
+    renderHistory();
+  </script>
+</body>
+</html>
