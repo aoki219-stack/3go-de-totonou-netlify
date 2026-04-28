@@ -41,8 +41,6 @@
     }
 
     .hero {
-      position:relative;
-      overflow:hidden;
       border:1px solid rgba(232,220,205,.9);
       border-radius:34px;
       background:
@@ -224,7 +222,7 @@
 
     .length-row {
       display:grid;
-      grid-template-columns:repeat(3,1fr);
+      grid-template-columns:repeat(4,1fr);
       gap:8px;
       margin-top:10px;
     }
@@ -378,6 +376,9 @@
       color:#3f3832;
       line-height:2;
       white-space:pre-line;
+      word-break:break-word;
+      max-height:none;
+      overflow:visible;
       box-shadow:0 16px 30px rgba(120,98,58,.13),0 6px 14px rgba(120,98,58,.06);
     }
 
@@ -398,8 +399,6 @@
     }
 
     .save-card {
-      position:relative;
-      overflow:hidden;
       margin-top:18px;
       border-radius:30px;
       padding:24px 22px;
@@ -502,11 +501,13 @@
 
     @media (max-width:360px) {
       h1 { font-size:30px; }
+
       .option-grid,
       .actions,
       .row-buttons {
         grid-template-columns:1fr;
       }
+
       .length-row {
         grid-template-columns:repeat(2,1fr);
       }
@@ -517,7 +518,7 @@
 <body>
   <main class="phone">
     <section class="hero">
-      <div class="badge">✨ 3語から文章の入口を作る｜v3.0</div>
+      <div class="badge">✨ 3語から文章の入口を作る｜v3.1</div>
       <h1>3語で整える</h1>
       <p class="tagline">3つの言葉から、書くためのたたき台へ。</p>
       <p class="lead">
@@ -559,7 +560,7 @@
 
       <div class="field">
         <label>文章タイプ</label>
-        <div class="option-grid" id="genreGrid">
+        <div class="option-grid">
           <button class="option active" data-genre="随筆"><b>随筆</b><span>日常から考えを広げる</span></button>
           <button class="option" data-genre="日記"><b>日記</b><span>自然な記録として書く</span></button>
           <button class="option" data-genre="短い小説"><b>短い小説</b><span>場面と人物を作る</span></button>
@@ -572,6 +573,7 @@
           <button class="option" data-genre="手紙風"><b>手紙風</b><span>誰かに宛てて書く</span></button>
           <button class="option" data-genre="キャッチコピー"><b>キャッチコピー</b><span>短いコピー案を出す</span></button>
           <button class="option" data-genre="コラム"><b>コラム</b><span>読み手に視点を渡す</span></button>
+          <button class="option" data-genre="プロット"><b>プロット</b><span>物語や記事の骨組みを作る</span></button>
         </div>
       </div>
 
@@ -591,14 +593,12 @@
 
       <div class="field">
         <label for="lengthInput">文字数</label>
-        <input id="lengthInput" type="number" min="100" max="3000" step="50" value="800">
+        <input id="lengthInput" type="number" min="100" max="1000" step="50" value="800">
         <div class="length-row">
           <button class="length-btn" data-length="300">300</button>
           <button class="length-btn" data-length="500">500</button>
           <button class="length-btn active" data-length="800">800</button>
           <button class="length-btn" data-length="1000">1000</button>
-          <button class="length-btn" data-length="1500">1500</button>
-          <button class="length-btn" data-length="2000">2000</button>
         </div>
       </div>
 
@@ -675,6 +675,8 @@
   <div id="toast" class="toast">コピーしました</div>
 
   <script>
+    const API_URL = "https://tiny-frog-e071.aoki219.workers.dev";
+
     let selectedGenre = "随筆";
     let currentResult = null;
 
@@ -741,7 +743,7 @@
 
     function getLength() {
       const value = Number(document.getElementById("lengthInput").value || 800);
-      return Math.max(100, Math.min(3000, value));
+      return Math.max(100, Math.min(1000, value));
     }
 
     function fallbackResult(words) {
@@ -807,6 +809,7 @@
 
       const btn = document.getElementById("generateBtn");
       const loading = document.getElementById("loading");
+
       btn.disabled = true;
       loading.style.display = "block";
 
@@ -814,7 +817,7 @@
       setResult(words, fallback, { saveHistory: false });
 
       try {
-        const response = await fetch("https://tiny-frog-e071.aoki219.workers.dev", {
+        const response = await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -847,6 +850,7 @@
 
     function currentText() {
       const r = currentResult || {};
+
       return [
         "3語：",
         (r.words || getWords()).join("・"),
@@ -856,6 +860,9 @@
         "",
         "視点：",
         r.viewpoint || document.getElementById("viewpoint").value,
+        "",
+        "文字数：",
+        String(r.length || getLength()),
         "",
         "タイトル案：",
         r.title || "",
@@ -883,6 +890,7 @@
       const rect = card.getBoundingClientRect();
       const scale = 2;
       const canvas = document.createElement("canvas");
+
       canvas.width = Math.round(rect.width * scale);
       canvas.height = Math.round(rect.height * scale);
 
@@ -1027,12 +1035,17 @@
 
       setWords(item.words || ["", "", ""]);
       selectedGenre = item.genre || "随筆";
+
       document.querySelectorAll("[data-genre]").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.genre === selectedGenre);
       });
 
       document.getElementById("viewpoint").value = item.viewpoint || "おまかせ";
       document.getElementById("lengthInput").value = item.length || 800;
+
+      document.querySelectorAll("[data-length]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.length === String(item.length || 800));
+      });
 
       setResult(item.words, item, { saveHistory: false });
       document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
