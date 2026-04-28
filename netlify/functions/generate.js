@@ -19,9 +19,7 @@ exports.handler = async function(event) {
     const retry = Boolean(body.retry);
 
     const validation = validateInput(words, mood);
-    if (validation) {
-      return jsonResponse(400, { error: validation });
-    }
+    if (validation) return jsonResponse(400, { error: validation });
 
     const aiResponse = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -31,9 +29,9 @@ exports.handler = async function(event) {
       },
       body: JSON.stringify({
         model,
-        temperature: 0.85,
+        temperature: 0.95,
         input: [
-          { role: "system", content: buildSystemPrompt() },
+          { role: "system", content: buildSystemPrompt(mood, words) },
           { role: "user", content: buildUserPrompt(words, mood, retry) }
         ],
         text: {
@@ -63,153 +61,136 @@ exports.handler = async function(event) {
 
     if (!aiResponse.ok) {
       console.error("OpenAI API error:", raw);
-      return jsonResponse(502, {
-        error: "AI生成でエラーが発生しました。APIキーや利用上限を確認してください。"
-      });
+      return jsonResponse(502, { error: "AI生成でエラーが発生しました。" });
     }
 
     const data = JSON.parse(raw);
     const outputText = extractOutputText(data);
     const result = JSON.parse(outputText);
 
-    return jsonResponse(200, sanitizeResult(result));
+    return jsonResponse(200, sanitizeResult(result, words));
   } catch (error) {
     console.error(error);
-    return jsonResponse(500, {
-      error: "生成中にエラーが発生しました。少し内容を変えてもう一度お試しください。"
-    });
+    return jsonResponse(500, { error: "生成中にエラーが発生しました。" });
   }
 };
 
 function jsonResponse(statusCode, body) {
   return {
     statusCode,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store"
-    },
+    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
     body: JSON.stringify(body)
   };
 }
 
 function validateInput(words, mood) {
-  if (words.length !== 3 || words.some((word) => !word.trim())) {
-    return "3つの言葉を入力してください。";
-  }
-
-  if (words.some((word) => word.length > 20)) {
-    return "1つの言葉は20文字以内にしてください。";
-  }
-
-  const allowedMoods = [
-    "静かに整える",
-    "前向きに整える",
-    "学びとして整える",
-    "少し不思議に整える"
-  ];
-
-  if (!allowedMoods.includes(mood)) {
-    return "雰囲気の指定が正しくありません。";
-  }
-
+  if (words.length !== 3 || words.some((word) => !word.trim())) return "3つの言葉を入力してください。";
+  if (words.some((word) => word.length > 20)) return "1つの言葉は20文字以内にしてください。";
+  const allowedMoods = ["静かに整える", "前向きに整える", "学びとして整える", "少し不思議に整える"];
+  if (!allowedMoods.includes(mood)) return "雰囲気の指定が正しくありません。";
   const joined = words.join(" ");
-  const blocked = [
-    /住所|電話番号|メールアドレス|パスワード|クレジットカード/i,
-    /殺す|死ね|自殺|爆弾|薬物|違法/i
-  ];
-
-  if (blocked.some((pattern) => pattern.test(joined))) {
-    return "個人情報や危険な内容は入力しないでください。";
-  }
-
+  const blocked = [/住所|電話番号|メールアドレス|パスワード|クレジットカード/i, /殺す|死ね|自殺|爆弾|薬物|違法/i];
+  if (blocked.some((pattern) => pattern.test(joined))) return "個人情報や危険な内容は入力しないでください。";
   return null;
 }
 
-function buildSystemPrompt() {
+function buildSystemPrompt(mood, words) {
+  const [a, b, c] = words;
+  const moodRules = {
+    "静かに整える": "静かで落ち着いた内省文。余白、立ち止まる、眺める、呼吸の感覚を使う。",
+    "前向きに整える": "明日へつながる前向きな文体。小さな行動、一歩、試してみる方向にする。",
+    "学びとして整える": "心理学や認知、感情の言語化などの説明を少し入れる。知的で具体的にする。",
+    "少し不思議に整える": "偶然、合図、物語、手紙、景色などの比喩を使い、余韻を残す。"
+  };
+
   return `
 あなたは「3語で整える」という内省アプリの文章生成AIです。
 
-ユーザーが入力した3つの言葉をもとに、
-今日の小さな気づきと、感謝・改善・目標の3行日記を作ってください。
+入力語は「${a}」「${b}」「${c}」です。
 
-目的：
-読者が、何気なく入力した3語から、
-「なるほど、今の自分にはこういう見方もあるのか」
-と感じられるようにすること。
+最重要：
+- themeには「${a}」「${b}」「${c}」のうち最低2語を必ず入れる
+- insightの冒頭文には「${a}」「${b}」「${c}」を必ずすべて入れる
+- thanks/improve/goalの3つを合わせて「${a}」「${b}」「${c}」がすべて出るようにする
+- phraseには「${a}」「${b}」「${c}」のうち最低1語を必ず入れる
+- 雰囲気「${mood}」で文体をはっきり変える
 
-出力ルール：
+雰囲気ルール：
+${moodRules[mood] || moodRules["静かに整える"]}
+
+共通ルール：
 - 占いのように断定しすぎない
-- 「あなたはこういう人です」と決めつけない
 - 医療的、診断的、治療的な表現はしない
-- 心理学や日常の気づきを少し含める
 - 説教っぽくしない
-- やさしいが、ふわっとしすぎない
-- 少し知的で、落ち着いた文体にする
-- insightは180〜260字程度
-- 3行日記は「感謝・改善・目標」の形にする
-- phraseは短く、印象に残る一文にする
-- 未来、性格、健康状態を断定しない
-- 医療、法律、金銭、人間関係の重大判断を助言しない
-
-必ずJSONのみで返してください。
+- insightは180〜280字程度
+- phraseは短く印象的に
+- JSONのみで返す
 `.trim();
 }
 
 function buildUserPrompt(words, mood, retry) {
+  const [a, b, c] = words;
   return `
 入力キーワード：
-1. ${words[0]}
-2. ${words[1]}
-3. ${words[2]}
+1. ${a}
+2. ${b}
+3. ${c}
 
 雰囲気：
 ${mood}
 
 再生成：
-${retry ? "はい。前回と少し違う角度で作ってください。" : "いいえ。"}
+${retry ? "はい。前回と違う角度で作ってください。" : "いいえ。"}
 
-次のJSON形式で返してください。
+JSON形式で返してください。
 
 {
-  "theme": "見えてきたテーマ。短く印象的に。",
-  "insight": "今日のなるほど。読者がなるほどと思える具体的な気づき。",
-  "thanks": "感謝の1行。",
-  "improve": "改善の1行。反省を責めず、次への教訓にする。",
-  "goal": "目標の1行。明日できる小さな行動にする。",
-  "phrase": "今日の一言。短く印象的に。"
+  "theme": "必ず3語のうち最低2語を含める",
+  "insight": "冒頭に必ず「${a}」「${b}」「${c}」を含める",
+  "thanks": "感謝の1行",
+  "improve": "改善の1行",
+  "goal": "目標の1行",
+  "phrase": "必ず3語のうち最低1語を含める"
 }
 `.trim();
 }
 
 function extractOutputText(data) {
-  if (typeof data.output_text === "string") {
-    return data.output_text;
-  }
-
+  if (typeof data.output_text === "string") return data.output_text;
   const texts = [];
   for (const item of data.output || []) {
     for (const content of item.content || []) {
-      if (content.type === "output_text" && typeof content.text === "string") {
-        texts.push(content.text);
-      }
+      if (content.type === "output_text" && typeof content.text === "string") texts.push(content.text);
     }
   }
-
-  if (!texts.length) {
-    throw new Error("AIの出力を読み取れませんでした。");
-  }
-
+  if (!texts.length) throw new Error("AIの出力を読み取れませんでした。");
   return texts.join("");
 }
 
-function sanitizeResult(result) {
+function sanitizeResult(result, words) {
+  const [a, b, c] = words;
   const clean = {};
   for (const key of ["theme", "insight", "thanks", "improve", "goal", "phrase"]) {
-    clean[key] = String(result[key] || "").trim().slice(0, key === "insight" ? 600 : 160);
+    clean[key] = String(result[key] || "").trim().slice(0, key === "insight" ? 700 : 180);
   }
 
-  if (Object.values(clean).some((value) => !value)) {
-    throw new Error("AIの出力形式が不完全です。");
+  if (!clean.theme.includes(a) && !clean.theme.includes(b) && !clean.theme.includes(c)) {
+    clean.theme = `${a}・${b}・${c}から見える小さな気づき`;
+  }
+  const countThemeWords = [a, b, c].filter(w => clean.theme.includes(w)).length;
+  if (countThemeWords < 2) clean.theme = `${a}・${b}から見える、${c}の気配`;
+
+  if (!clean.insight.includes(a) || !clean.insight.includes(b) || !clean.insight.includes(c)) {
+    clean.insight = `「${a}」「${b}」「${c}」という3つの言葉から見ると、` + clean.insight;
+  }
+
+  const diaryAll = clean.thanks + clean.improve + clean.goal;
+  if (!diaryAll.includes(a)) clean.thanks = `「${a}」に気づけたことを大切にする。`;
+  if (!diaryAll.includes(b)) clean.improve = `「${b}」を見過ごしていたかもしれない。明日は少し意識してみる。`;
+  if (!diaryAll.includes(c)) clean.goal = `明日は「${c}」に関係する小さな行動をひとつ試してみる。`;
+
+  if (!clean.phrase.includes(a) && !clean.phrase.includes(b) && !clean.phrase.includes(c)) {
+    clean.phrase = `${a}・${b}・${c}は、今日を整える小さな入口になる。`;
   }
 
   return clean;

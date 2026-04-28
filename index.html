@@ -539,7 +539,7 @@
 <body>
   <main class="phone">
     <section class="hero">
-      <div class="badge">✨ ことばで今日を整える</div>
+      <div class="badge">✨ ことばで今日を整える｜v1.0.6</div>
       <h1>3語で整える</h1>
       <p class="tagline">ふと選んだ3語から、今日の気づきへ。</p>
       <p class="lead">
@@ -788,59 +788,65 @@
     }
 
     function chooseBase(words) {
-      const joined = words.join(" ");
-      return themeSeeds.find(s => s.keys.test(joined)) || null;
+      return null;
     }
 
     function makeGeneric(words, retry = false) {
       const [a, b, c] = words;
-      const themeChoices = [
-        `${a}から始まる小さな気づき`,
-        `${b}の前で立ち止まる`,
-        `${c}に隠れた今日の余白`,
-        `何気ない3語が教えるもの`
-      ];
 
-      const phraseChoices = [
-        `${a}も${b}も${c}も、今を整える小さな入口になる。`,
-        `気になった言葉には、今の自分が少し映る。`,
-        `何気ないものほど、心の状態をそっと教えてくれる。`,
-        `今日の余白は、もう目の前にあったのかもしれない。`
-      ];
+      const patterns = {
+        "静かに整える": {
+          theme: `${a}・${b}・${c}から見える静かな余白`,
+          insight: `「${a}」「${b}」「${c}」という3つの言葉を並べると、日常の中で一度立ち止まる感覚が見えてきます。${a}は目に入った印象、${b}はそこにある景色、${c}は心が反応した小さな合図のようにも読めます。急いで意味を決めず、今日はこの3語を静かに眺めるだけでも、少し余白が戻るかもしれません。`,
+          thanks: `今日、「${a}」や「${b}」に気づけたことを大切にする。`,
+          improve: `「${c}」が気になったなら、少し心が急いでいたのかもしれない。明日は一度だけ立ち止まる。`,
+          goal: `明日は「${a}」「${b}」「${c}」のように、目に入ったものをひとつ言葉にしてみる。`,
+          phrase: `${a}の前で、${b}を眺め、${c}に気づく時間があっていい。`
+        },
+        "前向きに整える": {
+          theme: `${a}・${b}・${c}を明日の一歩に変える`,
+          insight: `「${a}」「${b}」「${c}」は、今あるものを使って次へ進むための合図として読むこともできます。${a}に気づき、${b}を見て、${c}を感じたなら、そこには小さな行動の入口があります。大きく変える必要はありません。今日の3語を、明日できる一つの小さな行動に変えることが前向きさの始まりになります。`,
+          thanks: `今日、「${a}」「${b}」「${c}」というきっかけを見つけられた。`,
+          improve: `考えるだけで止まっていた部分があるかもしれない。明日は「${c}」を小さな行動に変える。`,
+          goal: `明日は「${a}」か「${b}」に関係することを一つだけ試してみる。`,
+          phrase: `${a}も${b}も${c}も、明日の一歩に変えられる。`
+        },
+        "学びとして整える": {
+          theme: `${a}・${b}・${c}を言語化して整える`,
+          insight: `「${a}」「${b}」「${c}」のように気になった言葉を書き出すことは、頭の中の状態を外に置く作業に近いものです。心理学では、感情や印象を言語化すると、自分の反応と少し距離を取りやすくなると考えられています。${a}、${b}、${c}を並べて眺めるだけでも、漠然とした気分が扱いやすい形に変わります。`,
+          thanks: `今日の自分が「${a}」「${b}」「${c}」に反応したことに気づけた。`,
+          improve: `感じたことを流していたかもしれない。明日は「${c}」の理由を一言だけ書いてみる。`,
+          goal: `明日は気になった言葉を3つメモし、なぜ気になったかを一言添える。`,
+          phrase: `${a}・${b}・${c}を言葉にすると、心は少し整理される。`
+        },
+        "少し不思議に整える": {
+          theme: `${a}・${b}・${c}が置いていった小さな合図`,
+          insight: `「${a}」「${b}」「${c}」は、ただ偶然並んだ言葉のようでいて、今の景色を少し違って見せてくれます。${a}が入口になり、${b}が場面を作り、${c}がその奥にある気配を知らせる。意味は最初から決まっていなくても、あとから静かに浮かび上がることがあります。今日はこの3語を、小さな手紙のように受け取ってみてもいいかもしれません。`,
+          thanks: `偶然選んだ「${a}」「${b}」「${c}」を、少し面白がることができた。`,
+          improve: `意味を急いで決めすぎていたかもしれない。明日は「${c}」の余韻を少し残してみる。`,
+          goal: `明日は偶然気になったものを一つだけ、写真かメモで残す。`,
+          phrase: `${a}と${b}のあいだに、${c}という合図が残っていた。`
+        }
+      };
 
-      let moodAdd = pick(endings[selectedMood] || endings["静かに整える"]);
-      let insight = `「${a}」「${b}」「${c}」という3つの言葉には、日常の中でふと立ち止まる感覚があります。人は忙しいときほど、目の前のものを見ているようで見落としがちです。けれど、なぜか気になった言葉を拾い上げると、今の自分が求めている安心や方向性に気づくことがあります。${moodAdd}`;
+      const base = patterns[selectedMood] || patterns["静かに整える"];
 
-      if (retry) {
-        insight = `同じ3語でも、少し見方を変えると印象は変わります。「${a}」は目に入ったもの、「${b}」は今いる場所や状況、「${c}」は心の反応として読むこともできます。言葉を並べて眺めるだけで、頭の中の散らかりが少し整理されることがあります。${moodAdd}`;
-      }
+      if (!retry) return base;
 
       return {
-        theme: retry ? pick(themeChoices.slice().reverse()) : pick(themeChoices),
-        insight,
-        thanks: `今日、「${a}」や「${b}」のような何気ないものに気づけた。`,
-        improve: `「${c}」が気になったのは、少し心が反応していたからかもしれない。明日はその感覚を無視しすぎない。`,
-        goal: `明日は、目に入ったものをひとつだけ言葉にして残してみる。`,
-        phrase: retry ? pick(phraseChoices.slice().reverse()) : pick(phraseChoices)
+        ...base,
+        theme: `${a}・${b}・${c}を別の角度から読む`,
+        insight: `同じ「${a}」「${b}」「${c}」でも、見方を変えると受け取れる意味は変わります。${a}をきっかけ、${b}を背景、${c}を心の反応として読むと、ただの言葉の並びが小さな内省の入口になります。一つの正解に絞らず、別の角度も残しておくと、気持ちは少しやわらぎます。`,
+        phrase: `${a}・${b}・${c}は、まだ別の読み方を残している。`
       };
     }
 
     function buildResult(words, retry = false) {
-      const base = chooseBase(words);
-      let result = base ? {...base} : makeGeneric(words, retry);
-
-      if (retry && base) {
-        result = {
-          ...result,
-          insight: result.insight + " 同じ言葉でも、見方を少し変えるだけで、今日の意味は別の角度から見えてきます。",
-          phrase: "同じ景色でも、読み方は一つではない。"
-        };
-      }
-
-      return result;
+      return makeGeneric(words, retry);
     }
 
-    function setResult(words, result) {
+    function setResult(words, result, options = {}) {
+      const { saveHistory = true } = options;
       const joined = words.join("・");
       document.getElementById("todayWords").textContent = joined;
       document.getElementById("moodChip").textContent = selectedMood;
@@ -857,8 +863,11 @@
       document.getElementById("cardPhrase").textContent = result.phrase;
 
       currentResult = { words, mood: selectedMood, ...result, createdAt: new Date().toISOString() };
-      saveToHistory(currentResult);
-      renderHistory();
+
+      if (saveHistory) {
+        saveToHistory(currentResult);
+        renderHistory();
+      }
     }
 
     async function generate(retry = false) {
@@ -873,20 +882,15 @@
       btn.disabled = true;
       loading.style.display = "block";
 
-      // 先に入力された3語をカードへ反映します。
-      // AI生成に時間がかかる場合や失敗した場合でも、前回の3語が残らないようにします。
-      const temporaryResult = buildResult(words, retry);
-      setResult(words, temporaryResult);
+      // 仮表示は履歴に保存しません。
+      const fallbackResult = buildResult(words, retry);
+      setResult(words, fallbackResult, { saveHistory: false });
 
       try {
         const response = await fetch("/.netlify/functions/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            words,
-            mood: selectedMood,
-            retry
-          })
+          body: JSON.stringify({ words, mood: selectedMood, retry })
         });
 
         const data = await response.json();
@@ -895,12 +899,15 @@
           throw new Error(data.error || "生成に失敗しました");
         }
 
-        setResult(words, data);
+        // AI生成結果だけを履歴に保存します。
+        // saveToHistory側でも同じ3語・同じ雰囲気は1件にまとめます。
+        setResult(words, data, { saveHistory: true });
         showToast("AIで生成しました");
       } catch (error) {
         console.error(error);
-        // AI接続で失敗しても、画面は入力された3語で更新された状態を保ちます。
-        showToast("AI生成に失敗したため、仮の結果を表示しました");
+        // AI生成に失敗した時だけ、仮結果を1件保存します。
+        setResult(words, fallbackResult, { saveHistory: true });
+        showToast("AI生成に失敗したため、3語反映済みの結果を表示しました");
       } finally {
         loading.style.display = "none";
         btn.disabled = false;
@@ -1053,7 +1060,16 @@
 
     function saveToHistory(item) {
       const history = getHistory();
-      const next = [item, ...history].slice(0, 5);
+
+      // 同じ3語・同じ雰囲気の履歴は1件にまとめます。
+      // 仮結果とAI生成結果が別々に残ったり、連打で重複したりするのを防ぎます。
+      const signature = `${item.words.join("・")}__${item.mood || ""}`;
+      const filtered = history.filter((old) => {
+        const oldSignature = `${(old.words || []).join("・")}__${old.mood || ""}`;
+        return oldSignature !== signature;
+      });
+
+      const next = [item, ...filtered].slice(0, 5);
       localStorage.setItem("threeWordsHistory", JSON.stringify(next));
     }
 
@@ -1107,7 +1123,7 @@
     }
 
     // 初期表示はサンプルを表示します。ボタンを押すとAI生成します。
-    setResult(["白い", "看板", "信号"], buildResult(["白い", "看板", "信号"], false));
+    setResult(["白い", "看板", "信号"], buildResult(["白い", "看板", "信号"], false), { saveHistory: false });
     renderHistory();
   </script>
 </body>
