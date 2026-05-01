@@ -888,9 +888,24 @@
       ].join("\n");
     }
 
-    function copyText() {
-      navigator.clipboard.writeText(currentText()).then(() => showToast("コピーしました"));
-    }
+   function copyText() {
+  const button = event.target;
+  const originalText = button.textContent;
+
+  navigator.clipboard.writeText(currentText()).then(() => {
+    button.textContent = "コピーしました";
+    button.style.background = "var(--deep)";
+    button.style.color = "white";
+
+    showToast("コピーしました");
+
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.style.background = "";
+      button.style.color = "";
+    }, 1200);
+  });
+}
 
     function saveToHistory(item) {
       const history = getHistory();
