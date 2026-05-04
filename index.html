@@ -4,980 +4,688 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>3語で整える</title>
+
   <style>
     :root {
-      --bg:#fbf6d8;
-      --card:rgba(255,254,244,.94);
-      --ink:#2d2924;
-      --sub:#6f665c;
-      --thin:#eadfba;
-      --soft:#f7efc8;
-      --deep:#3d342c;
-      --gold:#b38a55;
-      --danger:#9b4d3f;
-      --shadow:0 28px 70px rgba(50,42,33,.18);
+      --bg: #f7f3ec;
+      --card: #fffaf2;
+      --text: #2f2a24;
+      --sub: #6f665c;
+      --line: #e6dccd;
+      --accent: #b8834a;
+      --accent-dark: #8b6235;
+      --soft: #efe4d4;
+      --danger: #a04b3f;
+      --shadow: 0 18px 45px rgba(72, 52, 32, 0.12);
     }
 
-    * { box-sizing:border-box; }
-
-    html { scroll-behavior:smooth; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
-      margin:0;
-      min-height:100vh;
-      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","YuGothic","Noto Sans JP",sans-serif;
-      color:var(--ink);
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+        "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
       background:
-        radial-gradient(circle at 20% 0%, rgba(255,255,255,.94), transparent 34%),
-        radial-gradient(circle at 90% 8%, rgba(243,220,120,.26), transparent 30%),
-        linear-gradient(180deg,#fffdf0 0%,var(--bg) 58%,#f7efbf 100%);
-      line-height:1.85;
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 35%),
+        linear-gradient(180deg, #f8f2e9 0%, #f4ecdf 100%);
+      color: var(--text);
+      line-height: 1.8;
     }
 
-    .phone {
-      width:min(480px,100%);
-      margin:0 auto;
-      padding:22px 16px 48px;
+    .wrap {
+      width: min(920px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
     }
 
     .hero {
-      border:1px solid rgba(232,220,205,.9);
-      border-radius:34px;
-      background:
-        linear-gradient(145deg,rgba(255,255,255,.86),rgba(255,252,233,.80)),
-        radial-gradient(circle at bottom right,rgba(232,200,83,.14),transparent 40%);
-      box-shadow:var(--shadow);
-      padding:28px 22px 26px;
-      text-align:center;
+      text-align: center;
+      padding: 42px 20px 30px;
     }
 
     .badge {
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      padding:7px 13px;
-      border:1px solid var(--thin);
-      border-radius:999px;
-      background:rgba(255,255,255,.8);
-      font-size:12px;
-      color:var(--sub);
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(184, 131, 74, 0.12);
+      border: 1px solid rgba(184, 131, 74, 0.24);
+      color: var(--accent-dark);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 14px;
     }
 
     h1 {
-      margin:17px 0 7px;
-      font-size:35px;
-      letter-spacing:.04em;
-      line-height:1.25;
+      margin: 0;
+      font-size: clamp(36px, 8vw, 64px);
+      letter-spacing: 0.04em;
+      line-height: 1.15;
     }
 
     .tagline {
-      margin:0;
-      font-size:15px;
-      color:#51463d;
-      font-weight:700;
-      line-height:1.8;
+      margin: 18px 0 16px;
+      font-size: clamp(22px, 5vw, 34px);
+      font-weight: 800;
+      line-height: 1.45;
+      letter-spacing: 0.04em;
     }
 
     .lead {
-      margin:18px auto 0;
-      font-size:14px;
-      color:var(--sub);
-      max-width:360px;
-      line-height:1.95;
+      margin: 14px auto;
+      max-width: 620px;
+      color: var(--sub);
+      font-size: 16px;
+      line-height: 2;
     }
 
-    .panel {
-      margin-top:18px;
-      padding:20px;
-      border:1px solid var(--thin);
-      border-radius:30px;
-      background:var(--card);
-      box-shadow:0 24px 52px rgba(71,57,38,.18),0 10px 24px rgba(71,57,38,.10);
-      backdrop-filter:blur(10px);
+    .card {
+      background: rgba(255, 250, 242, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-top: 22px;
     }
 
-    .panel-head {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:13px;
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 20px;
+      letter-spacing: 0.04em;
     }
 
-    .title {
-      font-size:14px;
-      font-weight:800;
-      margin:0;
-      letter-spacing:.03em;
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
     }
 
-    .hint {
-      font-size:11px;
-      color:var(--sub);
-      white-space:nowrap;
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
     }
 
-    .inputs {
-      display:grid;
-      gap:10px;
+    .control-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 16px;
     }
 
-    .input-wrap {
-      position:relative;
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fffdf8;
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 16px;
+      color: var(--text);
+      outline: none;
     }
 
-    .input-wrap span {
-      position:absolute;
-      top:50%;
-      left:14px;
-      transform:translateY(-50%);
-      font-size:12px;
-      color:var(--gold);
-      font-weight:800;
-    }
-
-    input, select {
-      width:100%;
-      border:1px solid var(--thin);
-      border-radius:20px;
-      background:rgba(255,255,255,.72);
-      padding:13px 15px;
-      font-size:16px;
-      color:var(--ink);
-      outline:none;
-      transition:.18s;
-      font-family:inherit;
-    }
-
-    .input-wrap input {
-      padding-left:42px;
-    }
-
-    input:focus, select:focus {
-      border-color:#c9aa7d;
-      box-shadow:0 0 0 4px rgba(179,138,85,.14);
-      background:white;
-    }
-
-    .row-buttons {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:13px;
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(184, 131, 74, 0.75);
+      box-shadow: 0 0 0 4px rgba(184, 131, 74, 0.12);
     }
 
     .actions {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
     }
 
-    .actions .wide {
-      grid-column:1 / -1;
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.08s ease, opacity 0.2s ease;
     }
 
-    .option-grid {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:9px;
-      margin-top:10px;
+    button:active {
+      transform: translateY(1px);
     }
 
-    .option {
-      border:1px solid var(--thin);
-      background:rgba(255,255,255,.74);
-      border-radius:19px;
-      padding:12px;
-      min-height:76px;
-      text-align:left;
-      cursor:pointer;
-      transition:.18s;
-      color:var(--ink);
+    .primary {
+      background: var(--accent);
+      color: #fff;
+      min-width: 160px;
     }
 
-    .option b {
-      display:block;
-      font-size:13px;
-      margin-bottom:4px;
+    .secondary {
+      background: var(--soft);
+      color: var(--accent-dark);
     }
 
-    .option span {
-      display:block;
-      font-size:11px;
-      color:var(--sub);
-      line-height:1.55;
+    .ghost {
+      background: transparent;
+      color: var(--accent-dark);
+      border: 1px solid var(--line);
     }
 
-    .option.active {
-      background:var(--deep);
-      border-color:var(--deep);
-      color:white;
-      transform:translateY(-1px);
-      box-shadow:0 12px 24px rgba(61,52,44,.18);
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
-    .option.active span {
-      color:#e9dfd4;
-    }
-
-    .field {
-      margin-top:18px;
-    }
-
-    .field label {
-      display:block;
-      font-size:14px;
-      font-weight:800;
-      margin-bottom:8px;
-    }
-
-    .main-btn {
-      width:100%;
-      margin-top:18px;
-      border:none;
-      border-radius:22px;
-      padding:15px 18px;
-      background:linear-gradient(135deg,var(--deep),#5b4b3e);
-      color:white;
-      font-size:16px;
-      font-weight:800;
-      cursor:pointer;
-      box-shadow:0 18px 34px rgba(61,52,44,.26);
-    }
-
-    .main-btn:disabled {
-      opacity:.45;
-      cursor:not-allowed;
-    }
-
-    .sub-btn {
-      border:1px solid var(--thin);
-      border-radius:20px;
-      padding:12px 8px;
-      background:rgba(255,255,255,.7);
-      color:var(--ink);
-      font-weight:750;
-      cursor:pointer;
-      box-shadow:0 10px 20px rgba(71,57,38,.10);
-      font-size:13px;
-    }
-
-    .sub-btn.danger {
-      color:var(--danger);
-    }
-
-    .sub-btn.wide-action {
-      padding:13px 8px;
-      background:rgba(247,239,200,.72);
-    }
-
-    .loading {
-      display:none;
-      text-align:center;
-      color:var(--sub);
-      font-size:13px;
-      margin-top:12px;
-    }
-
-    .dots:after {
-      content:"";
-      animation:dots 1.2s infinite;
-    }
-
-    @keyframes dots {
-      0% { content:""; }
-      33% { content:"。"; }
-      66% { content:"。。"; }
-      100% { content:"。。。"; }
+    .notice {
+      margin: 18px 0 0;
+      padding: 16px 18px;
+      background: rgba(184, 131, 74, 0.1);
+      border: 1px solid rgba(184, 131, 74, 0.2);
+      border-radius: 18px;
+      color: var(--sub);
+      font-size: 14px;
+      line-height: 1.9;
     }
 
     .result {
-      display:block;
-      scroll-margin-top:18px;
+      display: none;
     }
 
-    .words-row {
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:16px;
+    .result.show {
+      display: block;
     }
 
-    .small-label {
-      display:block;
-      color:var(--sub);
-      font-size:12px;
-      line-height:1.3;
-      margin-bottom:5px;
+    .result-box {
+      background: #fffdf8;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      margin-top: 14px;
+      white-space: pre-wrap;
     }
 
-    .words {
-      font-size:17px;
-      font-weight:800;
+    .result-label {
+      font-weight: 800;
+      color: var(--accent-dark);
+      margin: 20px 0 6px;
     }
 
-    .chip {
-      display:inline-flex;
-      align-items:center;
-      border-radius:999px;
-      background:var(--soft);
-      color:#6a5f54;
-      padding:6px 10px;
-      font-size:11px;
-      white-space:nowrap;
+    .title-output {
+      font-size: 20px;
+      font-weight: 800;
     }
 
-    .type-box {
-      border-radius:26px;
-      padding:18px;
-      background:linear-gradient(135deg,rgba(247,239,200,1),rgba(255,250,226,1));
-      border:1px solid rgba(232,220,205,.7);
-      box-shadow:0 16px 30px rgba(120,98,58,.14),0 6px 14px rgba(120,98,58,.07);
+    .hint-list {
+      padding-left: 1.2em;
+      margin: 0;
     }
 
-    .type-box h2 {
-      margin:0;
-      font-size:22px;
-      line-height:1.5;
+    .hint-list li {
+      margin: 6px 0;
     }
 
-    .section {
-      margin-top:18px;
+    .status {
+      margin-top: 12px;
+      color: var(--sub);
+      font-size: 14px;
     }
 
-    .section h3 {
-      margin:0 0 8px;
-      font-size:15px;
-      letter-spacing:.03em;
-    }
-
-    .draft {
-      border:1px solid var(--thin);
-      border-radius:26px;
-      background:rgba(255,255,255,.78);
-      padding:18px;
-      font-size:15px;
-      color:#3f3832;
-      line-height:2;
-      white-space:pre-line;
-      word-break:break-word;
-      max-height:none;
-      overflow:visible;
-      box-shadow:0 16px 30px rgba(120,98,58,.13),0 6px 14px rgba(120,98,58,.06);
-    }
-
-    .hint-cards {
-      display:grid;
-      gap:10px;
-      margin-top:8px;
-    }
-
-    .hint-card {
-      border:1px solid rgba(232,220,205,.95);
-      border-radius:22px;
-      background:rgba(255,255,255,.72);
-      padding:14px 15px;
-      box-shadow:0 10px 22px rgba(120,98,58,.08);
-    }
-
-    .hint-pill {
-      display:inline-flex;
-      align-items:center;
-      width:fit-content;
-      border-radius:999px;
-      background:var(--soft);
-      color:#695b4d;
-      padding:4px 9px;
-      font-size:11px;
-      font-weight:800;
-      margin-bottom:8px;
-    }
-
-    .hint-text {
-      margin:0;
-      color:#4f473f;
-      font-size:13px;
-      line-height:1.8;
-      white-space:pre-line;
-      word-break:break-word;
+    .error {
+      color: var(--danger);
+      font-weight: 700;
     }
 
     .history-list {
-      display:grid;
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .history-note {
-      margin:-4px 0 10px;
-      color:var(--sub);
-      font-size:11px;
-      line-height:1.7;
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
     }
 
     .history-item {
-      border:1px solid var(--thin);
-      border-radius:20px;
-      padding:12px;
-      background:rgba(255,255,255,.62);
-      cursor:pointer;
+      background: #fffdf8;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
     }
 
-    .history-item b {
-      display:block;
-      font-size:13px;
-      margin-bottom:4px;
+    .history-meta {
+      color: var(--sub);
+      font-size: 12px;
+      margin-bottom: 6px;
     }
 
-    .history-item span {
-      display:block;
-      font-size:12px;
-      color:var(--sub);
-      line-height:1.55;
+    .history-title {
+      font-weight: 800;
+      margin-bottom: 6px;
     }
 
-    .empty {
-      color:var(--sub);
-      font-size:13px;
-      text-align:center;
-      padding:10px 0 2px;
+    .history-text {
+      color: var(--sub);
+      font-size: 14px;
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    .note-link-card {
-      margin-top:18px;
-      padding:20px;
-      border:1px solid var(--thin);
-      border-radius:28px;
-      background:rgba(255,255,255,.72);
-      box-shadow:0 18px 36px rgba(120,98,58,.12);
-      text-align:left;
+    .note-box {
+      text-align: center;
+      background: rgba(255, 250, 242, 0.72);
     }
 
-    .note-link-card .note-label {
-      display:inline-flex;
-      align-items:center;
-      border-radius:999px;
-      background:var(--soft);
-      color:#6a5f54;
-      padding:5px 10px;
-      font-size:11px;
-      font-weight:800;
-      margin-bottom:10px;
+    .note-box p {
+      margin: 8px 0;
+      color: var(--sub);
     }
 
-    .note-link-card h3 {
-      margin:0 0 8px;
-      font-size:17px;
-      line-height:1.6;
-      color:var(--deep);
+    .note-link {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 800;
     }
 
-    .note-link-card p {
-      margin:0;
-      font-size:13px;
-      color:var(--sub);
-      line-height:1.9;
+    .small-note {
+      font-size: 13px;
+      color: var(--sub);
+      margin-top: 10px;
     }
 
-    .note-link-card a {
-  display:flex;
-  width:fit-content;
-  align-items:center;
-  justify-content:center;
-  margin:14px auto 0;
-  padding:10px 14px;
-  border-radius:999px;
-  background:var(--deep);
-  color:white;
-  font-size:13px;
-  font-weight:800;
-  text-decoration:none;
-  box-shadow:0 12px 24px rgba(61,52,44,.18);
-}
-
-    .notice {
-      margin:18px 10px 0;
-      text-align:center;
-      color:var(--sub);
-      font-size:12px;
-      line-height:1.8;
+    footer {
+      text-align: center;
+      color: var(--sub);
+      font-size: 12px;
+      margin-top: 28px;
     }
 
-    .toast {
-      display:none;
-      position:fixed;
-      left:50%;
-      bottom:24px;
-      transform:translateX(-50%);
-      background:rgba(45,41,36,.94);
-      color:white;
-      border-radius:999px;
-      padding:10px 15px;
-      font-size:13px;
-      box-shadow:0 12px 32px rgba(0,0,0,.18);
-      z-index:5;
-    }
-
-    @media (max-width:360px) {
-      h1 { font-size:30px; }
-
-      .option-grid,
-      .row-buttons,
-      .actions {
-        grid-template-columns:1fr;
+    @media (max-width: 720px) {
+      .wrap {
+        width: min(100% - 22px, 920px);
+        padding-top: 18px;
       }
 
-      .actions .wide {
-        grid-column:auto;
+      .hero {
+        padding: 30px 8px 20px;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .word-grid,
+      .control-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
       }
     }
   </style>
 </head>
 
 <body>
-  <main class="phone">
+  <main class="wrap">
     <section class="hero">
-      <div class="badge">✨ 3語から文章の入口を作る｜v3.4</div>
+      <div class="badge">✨ 3語から文章の入口を作る｜v3.5</div>
       <h1>3語で整える</h1>
 
       <p class="tagline">
+        AIと遊ぶ、<br>
+        文章づくりの発想ゲーム。
+      </p>
+
+      <p class="lead">
         読むだけだった言葉を、<br>
         今日は少しだけ作る側へ。
       </p>
 
       <p class="lead">
         3語で整えるは、<br>
-        日常で目に入った言葉や、<br>
-        ふと浮かんだ単語から、<br>
-        短編小説、随筆、詩、投稿文などの<br>
-        文章のたたき台を作る発想ツールです。
+        3つの言葉からAIが文章のたたき台を作る、<br>
+        文章づくりの発想ゲームです。
       </p>
 
       <p class="lead">
-        完成させる必要はありません。<br>
-        読むだけでも、直しても、広げても大丈夫。
+        AIは、たった3語だけを手がかりに文章を作ります。<br>
+        だから、ときどき不自然な表現や、<br>
+        少しズレた展開が出ることもあります。
+      </p>
+
+      <p class="lead">
+        でも、その違和感も楽しみ方のひとつです。<br>
+        「ここは使える」<br>
+        「ここは直したい」<br>
+        「このテーマはAIが苦手かも」<br>
+        そんなふうに眺めながら、<br>
+        自分の文章に育ててみてください。
       </p>
     </section>
 
-    <section class="panel">
-      <div class="panel-head">
-        <p class="title">3つの言葉を入れる</p>
-        <span class="hint">例：駅・雨・イヤホン</span>
-      </div>
+    <section class="card">
+      <h2 class="section-title">3つの言葉を入れる</h2>
 
-      <div class="inputs">
-        <label class="input-wrap">
-          <span>01</span>
-          <input id="word1" value="駅" placeholder="例：雨">
-        </label>
-        <label class="input-wrap">
-          <span>02</span>
-          <input id="word2" value="雨" placeholder="例：コンビニ">
-        </label>
-        <label class="input-wrap">
-          <span>03</span>
-          <input id="word3" value="イヤホン" placeholder="例：ため息">
-        </label>
-      </div>
+      <div class="word-grid">
+        <div>
+          <label for="word1">1語目</label>
+          <input id="word1" type="text" placeholder="例：豚骨ラーメン" />
+        </div>
 
-      <div class="row-buttons">
-        <button class="sub-btn" onclick="fillRandom()">ランダム3語</button>
-        <button class="sub-btn" onclick="clearInputs()">入力を消す</button>
-      </div>
+        <div>
+          <label for="word2">2語目</label>
+          <input id="word2" type="text" placeholder="例：無印商品" />
+        </div>
 
-      <div class="field">
-        <label>文章タイプ</label>
-        <div class="option-grid">
-          <button class="option active" data-genre="Instagram投稿">
-            <b>Instagram投稿</b><span>短い行で投稿文にする</span>
-          </button>
-          <button class="option" data-genre="note本文">
-            <b>note本文</b><span>読める下書きにする</span>
-          </button>
-          <button class="option" data-genre="日記">
-            <b>日記</b><span>今日の記録として書く</span>
-          </button>
-          <button class="option" data-genre="随筆/コラム風">
-            <b>随筆/コラム風</b><span>日常から考えを広げる</span>
-          </button>
-          <button class="option" data-genre="手紙風">
-            <b>手紙風</b><span>誰かに宛てて書く</span>
-          </button>
-          <button class="option" data-genre="キャッチコピー">
-            <b>キャッチコピー</b><span>短いコピー案にする</span>
-          </button>
-          <button class="option" data-genre="短編小説">
-            <b>短編小説</b><span>小さな物語にする</span>
-          </button>
-          <button class="option" data-genre="ミステリー風">
-            <b>ミステリー風</b><span>違和感と謎を作る</span>
-          </button>
-          <button class="option" data-genre="絵本風">
-            <b>絵本風</b><span>やさしい物語にする</span>
-          </button>
-          <button class="option" data-genre="詩">
-            <b>詩</b><span>余韻とリズムで書く</span>
-          </button>
-          <button class="option" data-genre="俳句・短歌風">
-            <b>俳句・短歌風</b><span>季語や発想も出す</span>
-          </button>
-          <button class="option" data-genre="プロット">
-            <b>プロット</b><span>作品の骨組みを作る</span>
-          </button>
+        <div>
+          <label for="word3">3語目</label>
+          <input id="word3" type="text" placeholder="例：かばん" />
         </div>
       </div>
 
-      <div class="field">
-        <label for="viewpoint">視点</label>
-        <select id="viewpoint">
-          <option>おまかせ</option>
-          <option>一人称</option>
-          <option>三人称</option>
-        </select>
+      <div class="control-grid">
+        <div>
+          <label for="type">文章タイプ</label>
+          <select id="type">
+            <option value="Instagram投稿">Instagram投稿</option>
+            <option value="note本文">note本文</option>
+            <option value="日記">日記</option>
+            <option value="随筆/コラム風">随筆/コラム風</option>
+            <option value="手紙風">手紙風</option>
+            <option value="キャッチコピー">キャッチコピー</option>
+            <option value="短編小説">短編小説</option>
+            <option value="ミステリー風">ミステリー風</option>
+            <option value="絵本風">絵本風</option>
+            <option value="詩">詩</option>
+            <option value="俳句・短歌風">俳句・短歌風</option>
+            <option value="プロット">プロット</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="perspective">視点</label>
+          <select id="perspective">
+            <option value="おまかせ">おまかせ</option>
+            <option value="一人称">一人称</option>
+            <option value="三人称">三人称</option>
+          </select>
+        </div>
       </div>
 
-      <button id="generateBtn" class="main-btn" onclick="generate()">文章のたたき台を作る</button>
-      <div id="loading" class="loading dots">3語から文章の入口を作っています</div>
+      <div class="actions">
+        <button class="primary" id="generateBtn">生成する</button>
+        <button class="secondary" id="retryBtn" disabled>もう一度作る</button>
+        <button class="ghost" id="clearWordsBtn">別の3語</button>
+      </div>
+
+      <p class="notice">
+        AIが作るのは完成品ではなく、文章を書くためのたたき台です。<br>
+        うまくハマる日も、少しズレる日もあります。<br>
+        その違和感も含めて、言葉遊びとして楽しんでください。
+      </p>
+
+      <div id="status" class="status"></div>
     </section>
 
-    <section id="result" class="result">
-      <section class="panel">
-        <div class="words-row">
-          <div>
-            <span class="small-label">今日の3語</span>
-            <div id="todayWords" class="words">駅・雨・イヤホン</div>
-          </div>
-          <span id="genreChip" class="chip">Instagram投稿</span>
-        </div>
+    <section id="result" class="card result">
+      <h2 class="section-title">生成されたたたき台</h2>
 
-        <div class="type-box">
-          <span class="small-label">タイトル案</span>
-          <h2 id="title">雨の駅で、イヤホンを外す</h2>
-        </div>
+      <div class="result-label">タイトル案</div>
+      <div id="titleOutput" class="result-box title-output"></div>
 
-        <div class="section">
-          <h3>たたき台</h3>
-          <div id="draft" class="draft"></div>
-        </div>
+      <div class="result-label">たたき台</div>
+      <div id="draftOutput" class="result-box"></div>
 
-        <div class="section">
-          <h3>広げるヒント</h3>
-          <div id="hints" class="hint-cards"></div>
-        </div>
+      <div class="result-label">広げるヒント</div>
+      <div id="hintsOutput" class="result-box"></div>
 
-        <div class="actions">
-          <button class="sub-btn" onclick="copyText()">コピーする</button>
-          <button class="sub-btn" onclick="generate(true)">もう一度作る</button>
-          <button class="sub-btn wide wide-action" onclick="resetWords()">別の3語</button>
-        </div>
-      </section>
+      <div class="actions">
+        <button class="primary" id="copyBtn">コピーする</button>
+      </div>
     </section>
 
-    <section class="panel">
-      <div class="panel-head">
-        <p class="title">履歴</p>
-        <button class="sub-btn danger" style="width:auto; padding:8px 12px;" onclick="clearHistory()">削除</button>
-      </div>
-
-      <p class="history-note">
+    <section class="card">
+      <h2 class="section-title">履歴</h2>
+      <p class="small-note">
         ※PCとスマホの履歴は共有されません。今使っている端末にだけ保存されます。
       </p>
 
-      <div id="history" class="history-list"></div>
+      <div class="actions">
+        <button class="ghost" id="clearHistoryBtn">履歴を消す</button>
+      </div>
+
+      <div id="historyList" class="history-list"></div>
     </section>
 
-    <section class="note-link-card">
-      <span class="note-label">余白人 note</span>
-      <h3>このアプリは note「余白人」から生まれました。</h3>
-      <p>
-        日常の余白、ひとり時間、言葉のことを綴っています。<br>
-        3語から生まれた文章の続きも、noteで公開していきます。
-      </p>
-      <a href="https://note.com/unique_coyote793" target="_blank" rel="noopener noreferrer">
+    <section class="card note-box">
+      <p>このアプリは note「余白人」から生まれました。</p>
+      <p>日常の余白、ひとり時間、言葉のことを綴っています。</p>
+      <p>3語から生まれた文章の続きも、noteで公開していきます。</p>
+      <a class="note-link" href="https://note.com/unique_coyote793" target="_blank" rel="noopener noreferrer">
         余白人 note を読む
       </a>
     </section>
 
-    <p class="notice">
-      AIが作るのは完成品ではなく、文章を書くためのたたき台です。<br>
-      そのまま使っても、直して自分の文章にしてもOKです。
-    </p>
+    <footer>
+      3語で整える｜AIと遊ぶ、文章づくりの発想ゲーム
+    </footer>
   </main>
 
-  <div id="toast" class="toast">コピーしました</div>
-
   <script>
-    const API_URL = "https://tiny-frog-e071.aoki219.workers.dev";
+    const WORKER_URL = "https://tiny-frog-e071.aoki219.workers.dev";
+    const HISTORY_KEY = "three_words_history_v35";
 
-    let selectedGenre = "Instagram投稿";
-    let currentResult = null;
+    const word1 = document.getElementById("word1");
+    const word2 = document.getElementById("word2");
+    const word3 = document.getElementById("word3");
+    const type = document.getElementById("type");
+    const perspective = document.getElementById("perspective");
 
-    const randomPool = {
-      color: ["黄色い", "白い", "青い", "赤い", "透明な", "薄暗い", "淡い", "まぶしい", "くすんだ", "銀色の"],
-      object: ["花", "鍵", "コーヒー", "靴", "看板", "窓", "手紙", "レシート", "傘", "時計", "椅子", "ノート", "イヤホン"],
-      scene: ["散歩", "駅", "帰り道", "コンビニ", "ベンチ", "雨", "朝", "夜", "夕方", "沈黙", "約束", "風"]
-    };
+    const generateBtn = document.getElementById("generateBtn");
+    const retryBtn = document.getElementById("retryBtn");
+    const clearWordsBtn = document.getElementById("clearWordsBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
-    document.querySelectorAll("[data-genre]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll("[data-genre]").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        selectedGenre = btn.dataset.genre;
-        document.getElementById("genreChip").textContent = selectedGenre;
-      });
-    });
+    const statusEl = document.getElementById("status");
+    const resultEl = document.getElementById("result");
+    const titleOutput = document.getElementById("titleOutput");
+    const draftOutput = document.getElementById("draftOutput");
+    const hintsOutput = document.getElementById("hintsOutput");
+    const historyList = document.getElementById("historyList");
+
+    let lastResultText = "";
 
     function getWords() {
       return [
-        document.getElementById("word1").value.trim(),
-        document.getElementById("word2").value.trim(),
-        document.getElementById("word3").value.trim()
+        word1.value.trim(),
+        word2.value.trim(),
+        word3.value.trim()
       ];
     }
 
-    function setWords(words) {
-      document.getElementById("word1").value = words[0] || "";
-      document.getElementById("word2").value = words[1] || "";
-      document.getElementById("word3").value = words[2] || "";
+    function setStatus(message, isError = false) {
+      statusEl.textContent = message;
+      statusEl.className = isError ? "status error" : "status";
     }
 
-    function pick(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
+    function setLoading(isLoading) {
+      generateBtn.disabled = isLoading;
+      retryBtn.disabled = isLoading || !lastResultText;
+      generateBtn.textContent = isLoading ? "生成中..." : "生成する";
     }
 
-    function fillRandom() {
-      const words = [
-        pick(randomPool.color),
-        pick(randomPool.object),
-        pick(randomPool.scene)
-      ];
-      setWords(words);
-      showToast("ランダム3語を入れました");
-    }
-
-    function clearInputs() {
-      setWords(["", "", ""]);
-      showToast("入力を消しました");
-    }
-
-    function resetWords() {
-      setWords(["", "", ""]);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function fallbackResult(words) {
-      const [a, b, c] = words;
-
-      return {
-        title: `${a}・${b}・${c}から始める文章`,
-        draft: `「${a}」「${b}」「${c}」。この3つの言葉を並べると、まだ文章になる前の景色が見えてきます。\n\n${b}はただそこにあるものではなく、${a}という印象をまとって、${c}の時間の中に置かれています。\n\nここから先は、投稿にも、物語にも、短い詩にもできます。大事なのは、この3語を正しく説明することではなく、自分では選ばなかった角度から文章を始めてみることです。`,
-        hints: [
-          `今回の切り口：${a}を印象、${b}を中心、${c}を場面としてつなげています。`,
-          `書き直すなら：${b}をもっと具体的な場面にすると、文章に厚みが出ます。`,
-          `別の方向：${c}を結末やオチのきっかけにすると、違う文章に育てられます。`
-        ]
-      };
-    }
-
-    function setResult(words, result, options = {}) {
-      const { saveHistory = true } = options;
-      const joined = words.join("・");
-
-      document.getElementById("todayWords").textContent = joined;
-      document.getElementById("genreChip").textContent = selectedGenre;
-      document.getElementById("title").textContent = result.title || "";
-      document.getElementById("draft").textContent = result.draft || "";
-
-      const hintsRoot = document.getElementById("hints");
-      const hints = Array.isArray(result.hints) ? result.hints : [];
-      const labels = ["今回の切り口", "書き直すなら", "別の方向"];
-
-      hintsRoot.innerHTML = hints.map((text, index) => `
-        <article class="hint-card">
-          <span class="hint-pill">${escapeHtml(labels[index] || "ヒント")}</span>
-          <p class="hint-text">${escapeHtml(text)}</p>
-        </article>
-      `).join("");
-
-      currentResult = {
-        words,
-        genre: selectedGenre,
-        viewpoint: document.getElementById("viewpoint").value,
-        ...result,
-        createdAt: new Date().toISOString()
-      };
-
-      if (saveHistory) {
-        saveToHistory(currentResult);
-        renderHistory();
+    function normalizeHints(hints) {
+      if (Array.isArray(hints)) {
+        return hints.map((hint) => `・${hint}`).join("\n");
       }
+
+      if (typeof hints === "string") {
+        return hints;
+      }
+
+      return "";
     }
 
-    async function generate(retry = false) {
+    function renderResult(data) {
+      const title = data.title || data.title案 || "タイトル案";
+      const draft = data.draft || data.body || data.text || data.たたき台 || "";
+      const hints = normalizeHints(data.hints || data.hint || data.広げるヒント || []);
+
+      titleOutput.textContent = title;
+      draftOutput.textContent = draft;
+      hintsOutput.textContent = hints || "・気になった一文を広げてみる\n・違和感のある部分を自分の言葉に直してみる\n・3語のうち、中心にしたい言葉をひとつ選んでみる";
+
+      lastResultText =
+        `【タイトル案】\n${title}\n\n` +
+        `【たたき台】\n${draft}\n\n` +
+        `【広げるヒント】\n${hintsOutput.textContent}`;
+
+      resultEl.classList.add("show");
+      retryBtn.disabled = false;
+
+      saveHistory({
+        title,
+        draft,
+        hints: hintsOutput.textContent,
+        words: getWords(),
+        type: type.value,
+        perspective: perspective.value,
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    async function generateText() {
       const words = getWords();
 
-      if (words.some(w => !w)) {
-        showToast("3つの言葉を入力してください");
+      if (words.some((word) => !word)) {
+        setStatus("3つの言葉をすべて入力してください。", true);
         return;
       }
 
-      const btn = document.getElementById("generateBtn");
-      const loading = document.getElementById("loading");
-
-      btn.disabled = true;
-      loading.style.display = "block";
-
-      const fallback = fallbackResult(words);
-      setResult(words, fallback, { saveHistory: false });
+      setLoading(true);
+      setStatus("AIが3語から文章のたたき台を作っています。");
 
       try {
-        const response = await fetch(API_URL, {
+        const payload = {
+          words,
+          word1: words[0],
+          word2: words[1],
+          word3: words[2],
+          type: type.value,
+          writingType: type.value,
+          perspective: perspective.value
+        };
+
+        const response = await fetch(WORKER_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            words,
-            genre: selectedGenre,
-            viewpoint: document.getElementById("viewpoint").value,
-            retry
-          })
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
         });
+
+        if (!response.ok) {
+          throw new Error(`通信エラーが発生しました。status: ${response.status}`);
+        }
 
         const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(data.error || "生成に失敗しました");
-        }
-
-        setResult(words, data, { saveHistory: true });
-        showToast("AIで作成しました");
+        renderResult(data);
+        setStatus("できました。気になるところを直しながら、自分の文章に育ててみてください。");
       } catch (error) {
         console.error(error);
-        setResult(words, fallback, { saveHistory: true });
-        showToast("AI生成に失敗したため、仮結果を表示しました");
+        setStatus("生成に失敗しました。Worker URLやCloudflareの設定を確認してください。", true);
       } finally {
-        loading.style.display = "none";
-        btn.disabled = false;
-        document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
+        setLoading(false);
       }
     }
 
-    function currentText() {
-      const r = currentResult || {};
-      const hints = Array.isArray(r.hints) ? r.hints : [];
+    function copyResult() {
+      if (!lastResultText) {
+        setStatus("コピーできる文章がまだありません。", true);
+        return;
+      }
 
-      return [
-        "3語：",
-        (r.words || getWords()).join("・"),
-        "",
-        "文章タイプ：",
-        r.genre || selectedGenre,
-        "",
-        "視点：",
-        r.viewpoint || document.getElementById("viewpoint").value,
-        "",
-        "タイトル案：",
-        r.title || "",
-        "",
-        "たたき台：",
-        r.draft || "",
-        "",
-        "広げるヒント：",
-        hints.map((x, i) => `${i + 1}. ${x}`).join("\n")
-      ].join("\n");
+      navigator.clipboard.writeText(lastResultText)
+        .then(() => {
+          setStatus("コピーしました。");
+        })
+        .catch(() => {
+          setStatus("コピーに失敗しました。手動で選択してコピーしてください。", true);
+        });
     }
 
-   function copyText() {
-  const button = event.target;
-  const originalText = button.textContent;
-
-  navigator.clipboard.writeText(currentText()).then(() => {
-    button.textContent = "コピーしました";
-    button.style.background = "var(--deep)";
-    button.style.color = "white";
-
-    showToast("コピーしました");
-
-    setTimeout(() => {
-      button.textContent = originalText;
-      button.style.background = "";
-      button.style.color = "";
-    }, 1200);
-  });
-}
-
-    function saveToHistory(item) {
-      const history = getHistory();
-      const signature = `${item.words.join("・")}__${item.genre}__${item.viewpoint}`;
-
-      const filtered = history.filter(old => {
-        const oldSignature = `${(old.words || []).join("・")}__${old.genre}__${old.viewpoint}`;
-        return oldSignature !== signature;
-      });
-
-      const next = [item, ...filtered].slice(0, 10);
-      localStorage.setItem("threeWordsWritingHistory", JSON.stringify(next));
+    function clearWords() {
+      word1.value = "";
+      word2.value = "";
+      word3.value = "";
+      word1.focus();
+      setStatus("別の3語を入れて試してみてください。");
     }
 
-    function getHistory() {
+    function loadHistory() {
       try {
-        return JSON.parse(localStorage.getItem("threeWordsWritingHistory") || "[]");
+        return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
       } catch {
         return [];
       }
     }
 
+    function saveHistory(item) {
+      const history = loadHistory();
+      history.unshift(item);
+
+      const limited = history.slice(0, 10);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(limited));
+
+      renderHistory();
+    }
+
     function renderHistory() {
-      const root = document.getElementById("history");
-      const history = getHistory();
+      const history = loadHistory();
 
       if (!history.length) {
-        root.innerHTML = '<div class="empty">まだ履歴はありません。</div>';
+        historyList.innerHTML = '<p class="small-note">まだ履歴はありません。</p>';
         return;
       }
 
-      root.innerHTML = history.map((item, index) => `
-        <div class="history-item" onclick="loadHistory(${index})">
-          <b>${escapeHtml((item.words || []).join("・"))}｜${escapeHtml(item.genre || "")}</b>
-          <span>${escapeHtml(item.title || "")}</span>
-        </div>
-      `).join("");
-    }
+      historyList.innerHTML = history.map((item) => {
+        const date = new Date(item.createdAt).toLocaleString("ja-JP");
+        const words = item.words ? item.words.join("・") : "";
+        const title = item.title || "タイトル案";
+        const draft = item.draft || "";
 
-    function loadHistory(index) {
-      const item = getHistory()[index];
-
-      if (!item) return;
-
-      setWords(item.words || ["", "", ""]);
-      selectedGenre = item.genre || "Instagram投稿";
-
-      document.querySelectorAll("[data-genre]").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.genre === selectedGenre);
-      });
-
-      document.getElementById("viewpoint").value = item.viewpoint || "おまかせ";
-
-      setResult(item.words, item, { saveHistory: false });
-      document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
+        return `
+          <div class="history-item">
+            <div class="history-meta">${date}｜${words}｜${item.type || ""}｜${item.perspective || ""}</div>
+            <div class="history-title">${escapeHtml(title)}</div>
+            <div class="history-text">${escapeHtml(draft)}</div>
+          </div>
+        `;
+      }).join("");
     }
 
     function clearHistory() {
-      localStorage.removeItem("threeWordsWritingHistory");
+      localStorage.removeItem(HISTORY_KEY);
       renderHistory();
-      showToast("履歴を削除しました");
+      setStatus("履歴を消しました。");
     }
 
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.style.display = "block";
-      setTimeout(() => toast.style.display = "none", 1500);
-    }
-
-    function escapeHtml(str) {
-      return String(str)
+    function escapeHtml(text) {
+      return String(text)
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
@@ -985,11 +693,11 @@
         .replaceAll("'", "&#039;");
     }
 
-    setResult(
-      ["駅", "雨", "イヤホン"],
-      fallbackResult(["駅", "雨", "イヤホン"]),
-      { saveHistory: false }
-    );
+    generateBtn.addEventListener("click", generateText);
+    retryBtn.addEventListener("click", generateText);
+    clearWordsBtn.addEventListener("click", clearWords);
+    copyBtn.addEventListener("click", copyResult);
+    clearHistoryBtn.addEventListener("click", clearHistory);
 
     renderHistory();
   </script>
