@@ -218,15 +218,6 @@
       font-weight: 800;
     }
 
-    .hint-list {
-      padding-left: 1.2em;
-      margin: 0;
-    }
-
-    .hint-list li {
-      margin: 6px 0;
-    }
-
     .status {
       margin-top: 12px;
       color: var(--sub);
@@ -567,7 +558,7 @@
       });
     }
 
-    async function generateText() {
+    async function generateText(isRetry = false) {
       const words = getWords();
 
       if (words.some((word) => !word)) {
@@ -581,12 +572,9 @@
       try {
         const payload = {
           words,
-          word1: words[0],
-          word2: words[1],
-          word3: words[2],
-          type: type.value,
-          writingType: type.value,
-          perspective: perspective.value
+          genre: type.value,
+          viewpoint: perspective.value,
+          retry: isRetry
         };
 
         const response = await fetch(WORKER_URL, {
@@ -597,17 +585,28 @@
           body: JSON.stringify(payload)
         });
 
+        const responseText = await response.text();
+
         if (!response.ok) {
-          throw new Error(`通信エラーが発生しました。status: ${response.status}`);
+          throw new Error(responseText || `通信エラーが発生しました。status: ${response.status}`);
         }
 
-        const data = await response.json();
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch {
+          throw new Error("WorkerからJSON以外の返答が返ってきました。");
+        }
+
+        if (data.error) {
+          throw new Error(data.error);
+        }
 
         renderResult(data);
         setStatus("できました。気になるところを直しながら、自分の文章に育ててみてください。");
       } catch (error) {
         console.error(error);
-        setStatus("生成に失敗しました。Worker URLやCloudflareの設定を確認してください。", true);
+        setStatus(`生成に失敗しました。${error.message || "Worker URL、OpenAI APIキー、Cloudflareの設定を確認してください。"}`, true);
       } finally {
         setLoading(false);
       }
@@ -670,7 +669,7 @@
 
         return `
           <div class="history-item">
-            <div class="history-meta">${date}｜${words}｜${item.type || ""}｜${item.perspective || ""}</div>
+            <div class="history-meta">${date}｜${escapeHtml(words)}｜${escapeHtml(item.type || "")}｜${escapeHtml(item.perspective || "")}</div>
             <div class="history-title">${escapeHtml(title)}</div>
             <div class="history-text">${escapeHtml(draft)}</div>
           </div>
@@ -693,8 +692,8 @@
         .replaceAll("'", "&#039;");
     }
 
-    generateBtn.addEventListener("click", generateText);
-    retryBtn.addEventListener("click", generateText);
+    generateBtn.addEventListener("click", () => generateText(false));
+    retryBtn.addEventListener("click", () => generateText(true));
     clearWordsBtn.addEventListener("click", clearWords);
     copyBtn.addEventListener("click", copyResult);
     clearHistoryBtn.addEventListener("click", clearHistory);
